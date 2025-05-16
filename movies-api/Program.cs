@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using movies_api.Data;
+using movies_api.Interfaces;
+using movies_api.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +15,12 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddDbContext<ApplicationDBContext>(options => {
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 var app = builder.Build();
 
