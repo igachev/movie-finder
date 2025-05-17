@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using movies_api.Data;
+using movies_api.Helpers;
 using movies_api.Interfaces;
 using movies_api.Models;
 
@@ -97,9 +98,13 @@ namespace movies_api.Repository
             }
         }
 
-        public async Task<List<Movie>> GetMovies()
+        public async Task<List<Movie>> GetMovies(QueryObject query)
         {
-            var movies = await _context.Movie.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var movies = await _context.Movie.AsQueryable()
+            .Skip(skipNumber)
+            .Take(query.PageSize)
+            .ToListAsync();
             return movies;
         }
 

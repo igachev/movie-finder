@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using movies_api.Dtos.Movie;
+using movies_api.Helpers;
 using movies_api.Interfaces;
 using movies_api.Mappers;
 
@@ -22,9 +23,9 @@ namespace movies_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMovies()
+        public async Task<IActionResult> GetMovies([FromQuery] QueryObject query)
         {
-            var movies = await _movieRepo.GetMovies();
+            var movies = await _movieRepo.GetMovies(query);
             var moviesDto = movies.Select((movie) => movie.ToMovieDto()).ToList();
             return Ok(moviesDto);
         }
