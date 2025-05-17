@@ -10,5 +10,6 @@ namespace movies_api.Interfaces
     {
         Task<List<Movie>> GetMovies();
         Task<Movie> CreateMovie(Movie movie);
+        Task<Movie?> GetMovie(int id);
     }
 }

@@ -47,8 +47,26 @@ namespace movies_api.Controllers
             {
                 return BadRequest(e.Message);
             }
-            
+
         }
 
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetMovie([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // this code shows our validation errors as response
+            }
+            try
+            {
+                var movie = await _movieRepo.GetMovie(id);
+                return Ok(movie.ToMovieDto());
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
