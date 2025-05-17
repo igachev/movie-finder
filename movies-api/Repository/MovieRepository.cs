@@ -60,15 +60,35 @@ namespace movies_api.Repository
             }
         }
 
+        public async Task<Movie?> EditMovie(int id, Movie movie)
+        {
+            try
+            {
+                var movieExists = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == id);
+                if (movieExists == null)
+                {
+                    throw new Exception("You cannot edit this movie because it does not exist");
+                }
+                movieExists.Title = movie.Title;
+                movieExists.Description = movie.Description;
+                await _context.SaveChangesAsync();
+                return movieExists; 
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
         public async Task<Movie?> GetMovie(int id)
         {
             try
             {
-                var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == id);
+             var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == id);
                 if (movie == null)
                 {
                     throw new Exception("Movie not found");
-                }
+                }   
                 return movie;
           }
             catch (Exception e)

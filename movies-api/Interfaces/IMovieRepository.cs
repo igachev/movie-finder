@@ -12,5 +12,6 @@ namespace movies_api.Interfaces
         Task<Movie> CreateMovie(Movie movie);
         Task<Movie?> GetMovie(int id);
         Task<Movie?> DeleteMovie(int id);
+        Task<Movie?> EditMovie(int id, Movie movie);
     }
 }

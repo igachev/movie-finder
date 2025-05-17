@@ -83,5 +83,24 @@ namespace movies_api.Controllers
                 return NotFound(e.Message);
             }
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> EditMovie([FromRoute] int id, [FromBody] MovieRequestDto movieRequestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // this code shows our validation errors as response
+            }
+            try
+            {
+                var editedMovie = await _movieRepo.EditMovie(id, movieRequestDto.ToMovie());
+                return Ok(editedMovie.ToMovieDto());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
