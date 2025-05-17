@@ -41,6 +41,25 @@ namespace movies_api.Repository
             }
         }
 
+        public async Task<Movie?> DeleteMovie(int id)
+        {
+            try
+            {
+                var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == id);
+                if (movie == null)
+                {
+                    throw new Exception("You cannot delete this movie because it does not exist!");
+                }
+                _context.Movie.Remove(movie);
+                await _context.SaveChangesAsync();
+                return movie;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
         public async Task<Movie?> GetMovie(int id)
         {
             try

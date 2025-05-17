@@ -68,5 +68,20 @@ namespace movies_api.Controllers
                 return NotFound(e.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> DeleteMovie([FromRoute] int id)
+        {
+            try
+            {
+                var deletedMovie = await _movieRepo.DeleteMovie(id);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
