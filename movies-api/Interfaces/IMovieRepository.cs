@@ -9,5 +9,6 @@ namespace movies_api.Interfaces
     public interface IMovieRepository
     {
         Task<List<Movie>> GetMovies();
+        Task<Movie> CreateMovie(Movie movie);
     }
 }

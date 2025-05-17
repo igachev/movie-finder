@@ -20,7 +20,14 @@ namespace movies_api.Mappers
             };
         }
 
-        
+        public static Movie ToMovie(this MovieRequestDto movieRequestDto)
+        {
+            return new Movie
+            {
+                Title = movieRequestDto.Title,
+                Description = movieRequestDto.Description
+            };
+        }
 
     }
 }
