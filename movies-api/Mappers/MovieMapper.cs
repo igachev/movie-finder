@@ -16,7 +16,8 @@ namespace movies_api.Mappers
             {
                 Id = movie.Id,
                 Title = movie.Title,
-                Description = movie.Description
+                Description = movie.Description,
+                Comments = movie.Comments.Select((comment) => comment.ToCommentDto()).ToList()
             };
         }
 
