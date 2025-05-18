@@ -16,6 +16,6 @@ namespace movies_api.Data
         }
         
         public DbSet<Movie> Movie { get; set; }
-        
+        public DbSet<Comment> MyProperty { get; set; }
     }
 }
