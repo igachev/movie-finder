@@ -38,6 +38,28 @@ namespace movies_api.Repository
             }
         }
 
+        public async Task<Comment> DeleteComment(int commentId)
+        {
+            try
+            {
+                var comment = await _context.Comment.FirstOrDefaultAsync((c) => c.Id == commentId);
+                if (comment == null)
+                {
+                    throw new Exception("No such comment");
+                }
+                else
+                {
+                    _context.Comment.Remove(comment);
+                    await _context.SaveChangesAsync();
+                    return comment;
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
         public async Task<Comment> EditComment(int commentId, Comment comment)
         {
             try

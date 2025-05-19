@@ -65,6 +65,19 @@ namespace movies_api.Controllers
             }
         }
 
-
+        [HttpDelete]
+        [Route("{commentId:int}")]
+        public async Task<IActionResult> DeleteComment([FromRoute] int commentId)
+        {
+            try
+            {
+                var deletedComment = await _commentRepo.DeleteComment(commentId);
+                return Ok(deletedComment.ToCommentDto());   
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
