@@ -23,7 +23,7 @@ namespace movies_api.Repository
                 var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == comment.MovieId);
                 if (movie == null)
                 {
-                    throw new Exception("Movie does not exist");
+                    throw new Exception("you cannot create a comment for movie that does not exist");
                 }
                 else
                 {
@@ -36,6 +36,34 @@ namespace movies_api.Repository
             {
                 throw;
             }
+        }
+
+        public async Task<Comment> EditComment(int commentId, Comment comment)
+        {
+            try
+            {
+                var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == comment.MovieId);
+                var commentExists = await _context.Comment.FirstOrDefaultAsync((c) => c.Id == commentId);
+                if (movie == null)
+                {
+                    throw new Exception("you cannot edit a comment for movie that does not exist");
+                }
+                else if (commentExists == null)
+                {
+                    throw new Exception("comment not found");
+                }
+                else
+                {
+                    commentExists.Content = comment.Content;
+                    await _context.SaveChangesAsync();
+                    return commentExists;
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            
         }
     }
 }

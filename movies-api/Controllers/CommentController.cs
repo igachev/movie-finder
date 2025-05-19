@@ -25,7 +25,7 @@ namespace movies_api.Controllers
             [FromRoute] int movieId,
             [FromBody] CommentRequestDto commentRequestDto)
         {
-             if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState); // this code shows our validation errors as response
             }
@@ -39,7 +39,32 @@ namespace movies_api.Controllers
             {
                 return BadRequest(e.Message);
             }
-
         }
+
+        [HttpPut]
+        [Route("movie/{movieId:int}/comment/{commentId:int}")]
+        public async Task<IActionResult> EditComment(
+            [FromRoute] int movieId,
+            [FromRoute] int commentId,
+            [FromBody] CommentRequestDto commentRequestDto
+            )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // this code shows our validation errors as response
+            }
+            try
+            {
+                var comment = commentRequestDto.ToComment(movieId);
+                var editedComment = await _commentRepo.EditComment(commentId, comment);
+                return Ok(editedComment.ToCommentDto());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
     }
 }

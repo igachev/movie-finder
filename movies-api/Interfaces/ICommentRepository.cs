@@ -9,5 +9,6 @@ namespace movies_api.Interfaces
     public interface ICommentRepository
     {
         Task<Comment> AddComment(Comment comment);
+        Task<Comment> EditComment(int commentId,Comment comment);
     }
 }
