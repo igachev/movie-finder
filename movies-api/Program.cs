@@ -6,6 +6,7 @@ using movies_api.Data;
 using movies_api.Interfaces;
 using movies_api.Models;
 using movies_api.Repository;
+using movies_api.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,7 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
