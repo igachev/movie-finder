@@ -14,5 +14,7 @@ namespace movies_api.Models
         public string Description { get; set; } = string.Empty;
         // one to many -> comment
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        // one to many -> category
+        public List<Genre> Genres { get; set; } = new List<Genre>();
     }
 }

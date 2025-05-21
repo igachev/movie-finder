@@ -54,6 +54,7 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();

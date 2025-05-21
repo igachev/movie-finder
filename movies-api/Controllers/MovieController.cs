@@ -7,6 +7,7 @@ using movies_api.Dtos.Movie;
 using movies_api.Helpers;
 using movies_api.Interfaces;
 using movies_api.Mappers;
+using movies_api.Models;
 
 namespace movies_api.Controllers
 {
@@ -15,10 +16,13 @@ namespace movies_api.Controllers
     public class MovieController : ControllerBase
     {
         private readonly IMovieRepository _movieRepo;
+        private readonly IGenreRepository _genreRepo;
         public MovieController(
-        IMovieRepository movieRepo
+        IMovieRepository movieRepo,
+        IGenreRepository genreRepo
         )
         {
+            _genreRepo = genreRepo;
             _movieRepo = movieRepo;
         }
 
@@ -41,7 +45,13 @@ namespace movies_api.Controllers
             try
             {
                 var movie = movieRequestDto.ToMovie();
+                var genres = movieRequestDto.Genres;
+               
                 var createdMovie = await _movieRepo.CreateMovie(movie);
+                 for (int i = 0; i < genres.Count; i++)
+                {
+        var createdGenre = await _genreRepo.AddGenre(new Genre { MovieId = createdMovie.Id, GenreName = genres[i] });
+                }
                 return CreatedAtAction(nameof(CreateMovie), new { id = createdMovie.Id }, createdMovie.ToMovieDto());
             }
             catch (Exception e)

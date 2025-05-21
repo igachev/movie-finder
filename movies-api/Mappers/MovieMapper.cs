@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using movies_api.Dtos.Comment;
+using movies_api.Dtos.Genre;
 using movies_api.Dtos.Movie;
 using movies_api.Models;
 
@@ -17,7 +19,8 @@ namespace movies_api.Mappers
                 Id = movie.Id,
                 Title = movie.Title,
                 Description = movie.Description,
-                Comments = movie.Comments.Select((comment) => comment.ToCommentDto()).ToList()
+                Comments = movie.Comments.Select(c => c.ToCommentDto()).ToList(),
+                Genres = movie.Genres.Select(g => g.ToGenreDto()).ToList()
             };
         }
 

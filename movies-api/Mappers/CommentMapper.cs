@@ -24,7 +24,7 @@ namespace movies_api.Mappers
                 Id = comment.Id,
                 Content = comment.Content,
                 CreatedOn = comment.CreatedOn,
-                CreatedBy = comment.AppUser.UserName
+                CreatedBy = comment.AppUser.UserName 
             };
         }
     }

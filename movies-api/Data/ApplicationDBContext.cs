@@ -19,6 +19,8 @@ namespace movies_api.Data
 
         public DbSet<Movie> Movie { get; set; }
         public DbSet<Comment> Comment { get; set; }
+        public DbSet<Genre> Genre { get; set; }
+
 
          protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -85,7 +85,10 @@ namespace movies_api.Repository
         {
             try
             {
-             var movie = await _context.Movie.Include((m) => m.Comments).FirstOrDefaultAsync((m) => m.Id == id);
+             var movie = await _context.Movie.Include((m) => m.Comments)
+             .ThenInclude(c => c.AppUser)
+             .Include(m => m.Genres)
+             .FirstOrDefaultAsync((m) => m.Id == id);
                 if (movie == null)
                 {
                     throw new Exception("Movie not found");
@@ -101,7 +104,10 @@ namespace movies_api.Repository
         public async Task<List<Movie>> GetMovies(QueryObject query)
         {
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
-            var movies = await _context.Movie.Include((m) => m.Comments).AsQueryable()
+            var movies = await _context.Movie.Include((m) => m.Comments)
+            .ThenInclude(c => c.AppUser)
+            .Include(m => m.Genres)
+            .AsQueryable()
             .Skip(skipNumber)
             .Take(query.PageSize)
             .ToListAsync();
