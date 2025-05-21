@@ -87,5 +87,24 @@ namespace movies_api.Repository
             }
             
         }
+
+        public async Task<Comment> GetComment(int commentId)
+        {
+            try
+            {
+                // display the one to one relationship
+                var comment = await _context.Comment.Include((c) => c.AppUser)
+                .FirstOrDefaultAsync((c) => c.Id == commentId);
+                if (comment == null)
+                {
+                    throw new Exception("Comment not found");
+                }
+                return comment;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

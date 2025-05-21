@@ -15,5 +15,8 @@ namespace movies_api.Models
         // many to one -> Movie
         public int? MovieId { get; set; }
         public Movie? Movie { get; set; }
+        // one to one -> AppUser
+        public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

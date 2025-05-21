@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using movies_api.Dtos.Comment;
+using movies_api.Extensions;
 using movies_api.Interfaces;
 using movies_api.Mappers;
+using movies_api.Models;
 
 namespace movies_api.Controllers
 {
@@ -14,13 +18,34 @@ namespace movies_api.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepo;
-        public CommentController(ICommentRepository commentRepo)
+        private readonly UserManager<AppUser> _userManager;
+        public CommentController(
+            ICommentRepository commentRepo,
+            UserManager<AppUser> userManager
+            )
         {
             _commentRepo = commentRepo;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
+        [Route("{commentId}")]
+        public async Task<IActionResult> GetComment([FromRoute] int commentId)
+        {
+            try
+            {
+                var comment = await _commentRepo.GetComment(commentId);
+                return Ok(comment.ToCommentDto());
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]
         [Route("{movieId:int}")]
+        [Authorize]
         public async Task<IActionResult> AddComment(
             [FromRoute] int movieId,
             [FromBody] CommentRequestDto commentRequestDto)
@@ -31,15 +56,22 @@ namespace movies_api.Controllers
             }
             try
             {
+                var username = User.GetUsername();
+                var loggedInUser = await _userManager.FindByNameAsync(username);
+                
                 var comment = commentRequestDto.ToComment(movieId);
+                // using the one to one relationship between comment and AppUser
+                comment.AppUserId = loggedInUser.Id;
                 var addedComment = await _commentRepo.AddComment(comment);
-                return CreatedAtAction(nameof(AddComment), new { id = addedComment.Id }, addedComment.ToCommentDto());
+                return CreatedAtAction(nameof(GetComment), new { commentId = addedComment.Id }, addedComment.ToCommentDto());
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+
+      
 
         [HttpPut]
         [Route("movie/{movieId:int}/comment/{commentId:int}")]
