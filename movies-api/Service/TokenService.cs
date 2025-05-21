@@ -29,7 +29,8 @@ namespace movies_api.Service
             // this is what our token will contain - email
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
             };
             var encription = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
             // creating the token
