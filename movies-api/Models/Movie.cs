@@ -16,5 +16,7 @@ namespace movies_api.Models
         public List<Comment> Comments { get; set; } = new List<Comment>();
         // one to many -> category
         public List<Genre> Genres { get; set; } = new List<Genre>();
+        // many to many
+        public List<MovieGenre> MovieGenre { get; set; } = new List<MovieGenre>();
     }
 }

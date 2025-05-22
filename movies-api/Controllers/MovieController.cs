@@ -17,13 +17,16 @@ namespace movies_api.Controllers
     {
         private readonly IMovieRepository _movieRepo;
         private readonly IGenreRepository _genreRepo;
+        private readonly IMovieGenreRepository _movieGenreRepo;
         public MovieController(
         IMovieRepository movieRepo,
-        IGenreRepository genreRepo
+        IGenreRepository genreRepo,
+        IMovieGenreRepository movieGenreRepo
         )
         {
             _genreRepo = genreRepo;
             _movieRepo = movieRepo;
+            _movieGenreRepo = movieGenreRepo;
         }
 
         [HttpGet]
@@ -48,9 +51,10 @@ namespace movies_api.Controllers
                 var genres = movieRequestDto.Genres;
                
                 var createdMovie = await _movieRepo.CreateMovie(movie);
-                 for (int i = 0; i < genres.Count; i++)
+                for (int i = 0; i < genres.Count; i++)
                 {
-        var createdGenre = await _genreRepo.AddGenre(new Genre { MovieId = createdMovie.Id, GenreName = genres[i] });
+                    var createdGenre = await _genreRepo.AddGenre(new Genre { MovieId = createdMovie.Id, GenreName = genres[i] });
+                    await _movieGenreRepo.AddMovieGenre(createdMovie.Id, createdGenre.Id);
                 }
                 return CreatedAtAction(nameof(CreateMovie), new { id = createdMovie.Id }, createdMovie.ToMovieDto());
             }
