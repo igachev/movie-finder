@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using movies_api.Data;
+using movies_api.Helpers;
 using movies_api.Interfaces;
 using movies_api.Models;
 using movies_api.Repository;
@@ -58,7 +59,17 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMovieGenreRepository, MovieGenreRepository>();
 
+builder.Services.AddTransient<DbInitializer>();
+
 var app = builder.Build();
+
+// this code executes on app initialization
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var initializer = services.GetRequiredService<DbInitializer>();
+    await initializer.CreateAdminUser();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
