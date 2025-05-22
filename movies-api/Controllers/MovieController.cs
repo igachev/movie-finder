@@ -37,6 +37,15 @@ namespace movies_api.Controllers
             return Ok(moviesDto);
         }
 
+        [HttpGet]
+        [Route("filterByGenre")]
+        public async Task<IActionResult> FilterMoviesByGenre([FromQuery] QueryObject query)
+        {
+            var filteredMovies = await _movieGenreRepo.FilterMoviesByGenre(query);
+            var moviesDto = filteredMovies.Select((movie) => movie.ToMovieDto()).ToList();
+            return Ok(moviesDto);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateMovie([FromBody] MovieRequestDto movieRequestDto)
         {
