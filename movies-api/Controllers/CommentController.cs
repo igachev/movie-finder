@@ -45,7 +45,7 @@ namespace movies_api.Controllers
 
         [HttpPost]
         [Route("{movieId:int}")]
-        [Authorize]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> AddComment(
             [FromRoute] int movieId,
             [FromBody] CommentRequestDto commentRequestDto)
@@ -71,10 +71,11 @@ namespace movies_api.Controllers
             }
         }
 
-      
+
 
         [HttpPut]
         [Route("movie/{movieId:int}/comment/{commentId:int}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> EditComment(
             [FromRoute] int movieId,
             [FromRoute] int commentId,
@@ -99,12 +100,13 @@ namespace movies_api.Controllers
 
         [HttpDelete]
         [Route("{commentId:int}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> DeleteComment([FromRoute] int commentId)
         {
             try
             {
                 var deletedComment = await _commentRepo.DeleteComment(commentId);
-                return Ok(deletedComment.ToCommentDto());   
+                return Ok(deletedComment.ToCommentDto());
             }
             catch (Exception e)
             {

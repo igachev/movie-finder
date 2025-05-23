@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using movies_api.Dtos.Movie;
 using movies_api.Helpers;
@@ -47,6 +48,7 @@ namespace movies_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateMovie([FromBody] MovieRequestDto movieRequestDto)
         {
             if (!ModelState.IsValid)
@@ -58,7 +60,7 @@ namespace movies_api.Controllers
             {
                 var movie = movieRequestDto.ToMovie();
                 var genres = movieRequestDto.Genres;
-               
+
                 var createdMovie = await _movieRepo.CreateMovie(movie);
                 for (int i = 0; i < genres.Count; i++)
                 {
@@ -95,6 +97,7 @@ namespace movies_api.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteMovie([FromRoute] int id)
         {
             try
@@ -110,6 +113,7 @@ namespace movies_api.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditMovie([FromRoute] int id, [FromBody] MovieRequestDto movieRequestDto)
         {
             if (!ModelState.IsValid)

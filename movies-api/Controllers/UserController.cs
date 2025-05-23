@@ -63,7 +63,7 @@ namespace movies_api.Controllers
                             {
                                 Email = appUser.Email,
                                 UserName = appUser.UserName,
-                                Token = _tokenService.CreateToken(appUser)
+                                Token = await _tokenService.CreateToken(appUser)
                             }
                         );
                     }
@@ -110,7 +110,7 @@ namespace movies_api.Controllers
                     {
                         Email = user.Email,
                         UserName = user.UserName,
-                        Token = _tokenService.CreateToken(user)
+                        Token = await _tokenService.CreateToken(user)
                     }
                 );
             }
