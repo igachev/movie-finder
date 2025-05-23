@@ -19,6 +19,7 @@ namespace movies_api.Mappers
                 Id = movie.Id,
                 Title = movie.Title,
                 Description = movie.Description,
+                ImgUrl = movie.ImgUrl,
                 Comments = movie.Comments.Select(c => c.ToCommentDto()).ToList(),
                 Genres = movie.Genres.Select(g => g.ToGenreDto()).ToList()
             };
@@ -29,7 +30,8 @@ namespace movies_api.Mappers
             return new Movie
             {
                 Title = movieRequestDto.Title,
-                Description = movieRequestDto.Description
+                Description = movieRequestDto.Description,
+                ImgUrl = movieRequestDto.ImgUrl
             };
         }
 
