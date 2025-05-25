@@ -2,10 +2,11 @@ import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@a
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../types/MovieTypes';
 import { Observable, Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-movies',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss'
 })

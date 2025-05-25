@@ -1,1 +1,11 @@
-<p>movies works!</p>
+<section>
+    <h2>Movies Page</h2>
+    <article *ngFor="let movie of movies()">
+        <h4>Title: {{ movie.title }}</h4>
+        <div class="img-container">
+            <img src="{{ movie.imgUrl }}" alt="{{ movie.title }}">
+        </div>
+        <p>Description: {{ movie.description }}</p>
+        <p>Genre: <span *ngFor="let genre of movie.genres">{{ genre.genreName }} </span></p>
+    </article>
+</section>
