@@ -3,10 +3,11 @@ import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../types/MovieTypes';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
 
 @Component({
   selector: 'app-movies',
-  imports: [CommonModule],
+  imports: [CommonModule, MoviesCardComponent],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss'
 })
@@ -37,6 +38,21 @@ export class MoviesComponent implements OnInit,OnDestroy {
         this.loading.set(false)
       }
     })
+    }
+
+    nextPage(): void {
+        this.pageNumber++
+        this.getMovies()
+    }
+
+    previousPage(): void {
+      if(this.pageNumber === 1) {
+        return
+      }
+      else {
+        this.pageNumber--
+        this.getMovies()
+      }
     }
 
     ngOnDestroy(): void {
