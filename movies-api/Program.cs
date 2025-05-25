@@ -33,14 +33,16 @@ builder.Services.AddIdentity<AppUser,IdentityRole>(options => {
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
 // authentication setup
-builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
     options.DefaultChallengeScheme =
     options.DefaultForbidScheme =
     options.DefaultScheme =
     options.DefaultSignInScheme =
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -53,6 +55,16 @@ builder.Services.AddAuthentication(options => {
         ),
         RoleClaimType = ClaimTypes.Role // this line is required in order to use Authorization
     };
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
@@ -80,6 +92,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Enable CORS
+app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
