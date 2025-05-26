@@ -1,0 +1,31 @@
+<section>
+    <h2>Register Page</h2>
+    <form method="post" #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" name="username" ngModel required minlength="3" #username="ngModel">
+            <div *ngIf="username.touched && !username.valid">
+                <small *ngIf="username.errors?.['required']">Username is required</small>
+                <small *ngIf="username.errors?.['minlength']">Username must be at least 3 characters long</small>
+            </div>
+        </div>
+         <div>
+            <label for="email">Email</label>
+            <input type="text" name="email" ngModel required #email="ngModel">
+        </div>
+         <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" ngModel required #password="ngModel">
+        </div>
+        <div>
+            <button type="submit" [disabled]="!registerForm.valid">Register</button>
+        </div>
+        <ng-container *ngIf="errors().length > 0">
+            <div>
+                <p *ngFor="let error of errors()">{{ error }}</p>
+            </div>
+        </ng-container>
+    </form>
+</section>
+
+<!-- ngModel tells Angular to treat this input as part of a form and to track its state -->
