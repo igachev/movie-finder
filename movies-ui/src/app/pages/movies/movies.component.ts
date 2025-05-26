@@ -4,6 +4,7 @@ import { Movie } from '../../types/MovieTypes';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-movies',

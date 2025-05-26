@@ -1,8 +1,8 @@
 <section>
     <h2>Movies Page</h2>
-    <article *ngFor="let movie of movies()">
+    <ng-container *ngFor="let movie of movies()">
         <app-movies-card [movie]="movie"></app-movies-card>
-    </article>
+    </ng-container>
     <div>
         <button (click)="previousPage()">Previous Page</button>
         <button (click)="nextPage()">Next Page</button>

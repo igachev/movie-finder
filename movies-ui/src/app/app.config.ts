@@ -8,7 +8,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
      provideRouter(
-      routes
+      routes,
+      withComponentInputBinding(),
+      withRouterConfig({paramsInheritanceStrategy: 'always'})
       ),
       provideHttpClient(withInterceptorsFromDi())
     ]

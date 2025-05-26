@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Movie } from '../../types/MovieTypes';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movies-card',
@@ -10,6 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MoviesCardComponent {
     _movie!: Movie;
+     private router = inject(Router)
 
   @Input({required:true}) 
   get movie() {
@@ -17,6 +19,10 @@ export class MoviesCardComponent {
   }
   set movie(value: Movie) {
     this._movie = value;
+  }
+
+  goToMovie(movieId: number) {
+    this.router.navigate(['movies',movieId,'details'])
   }
 
 }
