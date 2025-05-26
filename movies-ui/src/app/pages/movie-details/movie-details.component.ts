@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { Subscription } from 'rxjs';
 import { Movie } from '../../types/MovieTypes';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-movie-details',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
@@ -16,6 +17,7 @@ export class MovieDetailsComponent implements OnInit,OnDestroy {
   private movieSubscription!: Subscription
   movie: WritableSignal<Movie | null> = signal(null)
   loading: WritableSignal<boolean> = signal(false)
+  errorMessage: WritableSignal<string> = signal("")
 
   ngOnInit(): void {
       this.getMovie()
@@ -30,7 +32,7 @@ export class MovieDetailsComponent implements OnInit,OnDestroy {
         console.log(this.movie())
       },
       error: (err) => {
-        console.log(err.error.errors)
+        this.errorMessage.set(err.error)
       },
       complete: () => {
         this.loading.set(false)
