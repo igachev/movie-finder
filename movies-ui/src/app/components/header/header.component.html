@@ -7,9 +7,19 @@
             <li>
                 <a [routerLink]="['/movies']">Movies</a>
             </li>
+            
+            <ng-container *ngIf="!isLoggedIn">
             <li>
                 <a [routerLink]="['/users/register']">Register</a>
             </li>
+            </ng-container>
+          
+            <ng-container *ngIf="isLoggedIn">
+            <li>
+                <button>Logout</button>
+            </li>
+            </ng-container>
+           
         </ul>
     </nav>
 </article>
