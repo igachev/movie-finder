@@ -25,6 +25,7 @@ onRegister(registerForm: NgForm) {
   this.registerSubscription = this.userService.register(userData).subscribe({
     next: (res) => {
       localStorage.setItem("userData",JSON.stringify(res))
+      this.userService.userSubject.next(res)
       this.router.navigate(['movies'])
     },
     error: (err) => {
