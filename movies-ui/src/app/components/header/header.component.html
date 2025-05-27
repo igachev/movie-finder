@@ -7,7 +7,7 @@
             <li>
                 <a [routerLink]="['/movies']">Movies</a>
             </li>
-            
+
             <ng-container *ngIf="!isLoggedIn">
             <li>
                 <a [routerLink]="['/users/register']">Register</a>
@@ -16,7 +16,7 @@
           
             <ng-container *ngIf="isLoggedIn">
             <li>
-                <button>Logout</button>
+                <button (click)="logout()">Logout</button>
             </li>
             </ng-container>
            

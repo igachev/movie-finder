@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserRegisterRequest, UserRegisterResponse } from '../types/UserTypes';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    
+    private router: Router
   ) { 
     this.$userSubjectObservable = this.userSubject.asObservable()
   }
@@ -27,6 +28,15 @@ export class UserService {
     if(localStorageData !== null) {
       let userData: UserRegisterResponse = JSON.parse(localStorage.getItem("userData") as string)
       this.userSubject.next(userData)
+    }
+  }
+
+  logout() {
+    let localStorageData = localStorage.getItem("userData")
+    if(localStorageData !== null) {
+      this.userSubject.next({email: "", username:"", token:""})
+      localStorage.removeItem("userData")
+      this.router.navigate(['/'])
     }
   }
 

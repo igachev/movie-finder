@@ -16,7 +16,6 @@ export class HeaderComponent implements OnInit {
  ngOnInit(): void {
   this.userService.$userSubjectObservable.subscribe({
     next: (res) => {
-      console.log(res.token)
       if(res.token !== "") {
         this.isLoggedIn = true
       }
@@ -25,6 +24,10 @@ export class HeaderComponent implements OnInit {
       }
     }
   })   
+ }
+
+ logout() {
+  this.userService.logout()
  }
 
 }
