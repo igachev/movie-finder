@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserRegisterRequest, UserRegisterResponse } from '../types/UserTypes';
+import { UserLoginRequest, UserLoginResponse, UserRegisterRequest, UserRegisterResponse } from '../types/UserTypes';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -21,6 +21,10 @@ export class UserService {
 
   register(userRegisterRequest: UserRegisterRequest): Observable<UserRegisterResponse> {
     return this.http.post<UserRegisterResponse>("http://localhost:5174/users/register",userRegisterRequest)
+  }
+
+  login(userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> {
+    return this.http.post<UserLoginResponse>("http://localhost:5174/users/register",userLoginRequest)
   }
 
   autoLogin() {
