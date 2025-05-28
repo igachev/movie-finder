@@ -1,0 +1,11 @@
+<section>
+    <form method="post" #addCommentForm="ngForm" (ngSubmit)="onAddComment(addCommentForm)">
+            <label for="content">Write your comment...</label>
+            <div>
+                <textarea name="content" cols="30" rows="10" ngModel></textarea>
+            </div>
+            <div>
+                <button type="submit">Add Comment</button>
+            </div>
+    </form>
+</section>

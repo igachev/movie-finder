@@ -20,8 +20,14 @@
                 <p>{{ comment.content }}</p>
             </div>
         </ng-container>
+
         <ng-container *ngIf="movie()?.comments!.length === 0">
             <p>No comments yet</p>
         </ng-container>
+
+        <ng-container *ngIf="isLoggedIn()">
+        <app-add-comment (commentEmitter)="receivedComment($event)"></app-add-comment>
+        </ng-container>
+        
     </article>
 </section>
