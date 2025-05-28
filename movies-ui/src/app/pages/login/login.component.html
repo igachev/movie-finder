@@ -1,0 +1,21 @@
+<section>
+    <h2>Login Page</h2>
+    <form method="post" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+         <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" ngModel required #email="ngModel">
+        </div>
+         <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" ngModel required #password="ngModel">
+        </div>
+        <div>
+            <button type="submit" [disabled]="!loginForm.valid">Login</button>
+        </div>
+        <ng-container *ngIf="errors().length > 0">
+            <div>
+                <p *ngFor="let error of errors()">{{ error }}</p>
+            </div>
+        </ng-container>
+    </form>
+</section>
