@@ -24,7 +24,7 @@ export class UserService {
   }
 
   login(userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> {
-    return this.http.post<UserLoginResponse>("http://localhost:5174/users/register",userLoginRequest)
+    return this.http.post<UserLoginResponse>("http://localhost:5174/users/login",userLoginRequest)
   }
 
   autoLogin() {

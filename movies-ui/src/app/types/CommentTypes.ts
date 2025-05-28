@@ -5,3 +5,7 @@ export type Comment = {
     createdOn: Date;
     createdBy: string;
 }
+
+export type CommentRequest = {
+    content: string;
+}
