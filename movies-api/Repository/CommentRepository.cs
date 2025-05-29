@@ -65,7 +65,8 @@ namespace movies_api.Repository
             try
             {
                 var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == comment.MovieId);
-                var commentExists = await _context.Comment.FirstOrDefaultAsync((c) => c.Id == commentId);
+                var commentExists = await _context.Comment.Include((c) => c.AppUser)
+                .FirstOrDefaultAsync((c) => c.Id == commentId);
                 if (movie == null)
                 {
                     throw new Exception("you cannot edit a comment for movie that does not exist");
