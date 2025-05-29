@@ -14,4 +14,14 @@ export class CommentService {
   addComment(movieId: number,commentRequest: CommentRequest) {
     return this.http.post<Comment>(`http://localhost:5174/comments/${movieId}`,commentRequest)
   }
+
+  editComment(movieId: number,commentId: number,commentRequest: CommentRequest) {
+    return this.http.put<Comment>(`http://localhost:5174/comments/movie/${movieId}/comment/${commentId}`,commentRequest)
+  }
+
+  getComment(commentId: number) {
+    return this.http.get<Comment>(`http://localhost:5174/comments/${commentId}`)
+  }
+
+  
 }
