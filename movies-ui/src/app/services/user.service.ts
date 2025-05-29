@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class UserService {
 
-  userSubject = new BehaviorSubject<UserRegisterResponse>({ email:'',token:'',username:'' })
+  userSubject = new BehaviorSubject<UserRegisterResponse>({ email:'',token:'',userName:'' })
   $userSubjectObservable!: Observable<UserRegisterResponse>
 
   constructor(
@@ -38,7 +38,7 @@ export class UserService {
   logout() {
     let localStorageData = localStorage.getItem("userData")
     if(localStorageData !== null) {
-      this.userSubject.next({email: "", username:"", token:""})
+      this.userSubject.next({email: "", userName:"", token:""})
       localStorage.removeItem("userData")
       this.router.navigate(['/'])
     }

@@ -18,6 +18,17 @@
             <div *ngFor="let comment of movie()?.comments">
                 <h6>Username: {{ comment.createdBy }} <span>{{ comment.createdOn }}</span></h6>
                 <p>{{ comment.content }}</p>
+                <div>
+    <button (click)="showHideEdit($event,comment.id)" *ngIf="comment.createdBy === username">
+        {{ selectedCommentId !== comment.id ? 'Edit' : 'Cancel' }}
+    </button>
+                </div>
+                <ng-container *ngIf="selectedCommentId === comment.id">
+                    <app-edit-comment 
+                    [movieId]="movie()!.id" 
+                    [commentId]="comment.id" 
+                    (commentEmitter)="commentWasEdited($event)"></app-edit-comment>
+                </ng-container>
             </div>
         </ng-container>
 

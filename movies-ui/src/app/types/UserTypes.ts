@@ -8,7 +8,7 @@ export type UserRegisterRequest = {
 export type UserRegisterResponse = {
     email: string;
     token: string;
-    username: string;
+    userName: string;
 }
 
 export type UserLoginRequest = {
@@ -19,5 +19,5 @@ export type UserLoginRequest = {
 export type UserLoginResponse = {
     email: string;
     token: string;
-    username: string;
+    userName: string;
 }

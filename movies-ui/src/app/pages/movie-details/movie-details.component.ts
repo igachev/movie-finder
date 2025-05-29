@@ -7,14 +7,17 @@ import { CommonModule } from '@angular/common';
 import { AddCommentComponent } from "../../components/add-comment/add-comment.component";
 import { UserService } from '../../services/user.service';
 import { Comment } from '../../types/CommentTypes';
+import { FormsModule } from '@angular/forms';
+import { EditCommentComponent } from "../../components/edit-comment/edit-comment.component";
 
 @Component({
   selector: 'app-movie-details',
-  imports: [CommonModule, AddCommentComponent],
+  imports: [CommonModule, AddCommentComponent, FormsModule, EditCommentComponent],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
 export class MovieDetailsComponent implements OnInit,OnDestroy {
+
 
   private route = inject(ActivatedRoute)
   private movieService = inject(MovieService)
@@ -24,12 +27,15 @@ export class MovieDetailsComponent implements OnInit,OnDestroy {
   loading: WritableSignal<boolean> = signal(false)
   errorMessage: WritableSignal<string> = signal("")
   isLoggedIn: WritableSignal<boolean> = signal(false)
+  selectedCommentId!: number | null
+  username!: string
 
   ngOnInit(): void {
       this.getMovie()
       this.userService.$userSubjectObservable.subscribe({
         next: (res) => {
-          res.token !== "" ? this.isLoggedIn.set(true) : this.isLoggedIn.set(false)
+          res.token !== "" ? this.isLoggedIn.set(true) : this.isLoggedIn.set(false);
+          this.username = res.userName;
         }
       })
   }
@@ -53,6 +59,21 @@ export class MovieDetailsComponent implements OnInit,OnDestroy {
 
   receivedComment($event: Comment) {
   this.getMovie()
+  }
+
+  showHideEdit(e:Event,commentId: number) {
+    let btnText = (e.target as HTMLButtonElement).innerText
+    if(btnText === 'Cancel') {
+      this.selectedCommentId = null
+    }
+    else {
+      this.selectedCommentId = commentId
+    }
+  }
+
+  commentWasEdited($event: string) {
+  this.getMovie()
+  this.selectedCommentId = null
   }
 
   ngOnDestroy(): void {
