@@ -22,4 +22,7 @@ export class MovieService {
     return this.http.get<Movie>(`http://localhost:5174/movies/${movieId}`)
   }
 
+  filterMoviesByGenre(pageNumber: number,pageSize: number,genreName: string): Observable<Movie[]> {
+   return this.http.get<Movie[]>(`http://localhost:5174/movies?pageNumber=${pageNumber}&pageSize=${pageSize}&genreName=${genreName}`)
+  }
 }
