@@ -9,7 +9,7 @@ import { UserService } from '../../services/user.service';
 import { Comment } from '../../types/CommentTypes';
 import { FormsModule } from '@angular/forms';
 import { EditCommentComponent } from "../../components/edit-comment/edit-comment.component";
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { CommentService } from '../../services/comment.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -19,10 +19,10 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 })
 export class MovieDetailsComponent implements OnInit {
 
-
   private route = inject(ActivatedRoute)
   private movieService = inject(MovieService)
   private userService = inject(UserService)
+  private commentService = inject(CommentService)
   movieId = this.route.snapshot.params['id']
   movie: WritableSignal<Movie | null> = signal(null)
   loading: WritableSignal<boolean> = signal(true)
@@ -32,8 +32,6 @@ export class MovieDetailsComponent implements OnInit {
   username!: string
   refreshTrigger = signal<number>(0);
      
-
-
   constructor() {
     effect(() => {
  // track the refresh trigger.Anytime the value of refreshTrigger changes the effect automatically re-run
@@ -83,5 +81,13 @@ export class MovieDetailsComponent implements OnInit {
   this.selectedCommentId = null
   }
 
+  deleteComment(commentId: number) {
+    this.commentService.deleteComment(commentId).subscribe({
+      next:(res) => {
+        this.refreshTrigger.update((prevValue) => prevValue + 1)
+      }
+    })
+  }
 
+  
 }

@@ -42,7 +42,8 @@ namespace movies_api.Repository
         {
             try
             {
-                var comment = await _context.Comment.FirstOrDefaultAsync((c) => c.Id == commentId);
+                var comment = await _context.Comment.Include((c) => c.AppUser)
+                .FirstOrDefaultAsync((c) => c.Id == commentId);
                 if (comment == null)
                 {
                     throw new Exception("No such comment");
