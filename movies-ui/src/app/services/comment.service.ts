@@ -23,5 +23,7 @@ export class CommentService {
     return this.http.get<Comment>(`http://localhost:5174/comments/${commentId}`)
   }
 
-  
+  deleteComment(commentId: number) {
+    return this.http.delete<Comment>(`http://localhost:5174/comments/${commentId}`)
+  }
 }
