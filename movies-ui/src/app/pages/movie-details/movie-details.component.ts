@@ -1,7 +1,7 @@
-import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { catchError, finalize, map, of, Subscription, switchMap } from 'rxjs';
+import { catchError, finalize, map, of, shareReplay, Subscription, switchMap, take } from 'rxjs';
 import { Movie } from '../../types/MovieTypes';
 import { CommonModule } from '@angular/common';
 import { AddCommentComponent } from "../../components/add-comment/add-comment.component";
@@ -24,32 +24,37 @@ export class MovieDetailsComponent implements OnInit {
   private movieService = inject(MovieService)
   private userService = inject(UserService)
   movieId = this.route.snapshot.params['id']
+  movie: WritableSignal<Movie | null> = signal(null)
   loading: WritableSignal<boolean> = signal(true)
   errorMessage: WritableSignal<string> = signal("")
   isLoggedIn: WritableSignal<boolean> = signal(false)
   selectedCommentId!: number | null
   username!: string
-  refreshTrigger = signal(0)
+  refreshTrigger = signal<number>(0);
      
-    movie = toSignal(
-      toObservable(this.refreshTrigger).pipe(
-    switchMap(() => {
-      this.loading.set(true);
-      return this.movieService.getMovie(this.movieId).pipe(
-        catchError((err) => {
-          this.errorMessage.set(err.error);
-          return of(null);
-        }),
-        finalize(() => this.loading.set(false))
-      );
-    })
-  ),
-  { initialValue: null }
-  );
+
+
+  constructor() {
+    effect(() => {
+ // track the refresh trigger.Anytime the value of refreshTrigger changes the effect automatically re-run
+  this.refreshTrigger() 
+  this.loading.set(true);
+  this.errorMessage.set('');
+  
+  this.movieService.getMovie(this.movieId).pipe(
+    catchError((err) => {
+      this.errorMessage.set(err.error);
+      return of(null);
+    }),
+    finalize(() => this.loading.set(false))
+  ).subscribe((res) => {
+    this.movie.set(res);
+  });
+});
+  }
   
 
   ngOnInit(): void {
-      
       this.userService.$userSubjectObservable.subscribe({
         next: (res) => {
           res.token !== "" ? this.isLoggedIn.set(true) : this.isLoggedIn.set(false);
@@ -60,7 +65,7 @@ export class MovieDetailsComponent implements OnInit {
 
 
   commentWasAdded($event: Comment) {
-  this.refreshTrigger.update((prevValue) => prevValue + 1)
+   this.refreshTrigger.update((prevValue) => prevValue + 1)
   }
 
   showHideEdit(e:Event,commentId: number) {

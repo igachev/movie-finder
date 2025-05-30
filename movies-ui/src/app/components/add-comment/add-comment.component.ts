@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommentService } from '../../services/comment.service';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -17,7 +17,7 @@ export class AddCommentComponent implements OnDestroy {
  private route = inject(ActivatedRoute)
  private commentService = inject(CommentService)
  private addCommentSubscription!: Subscription
- @Output()commentEmitter: BehaviorSubject<Comment> = new BehaviorSubject({id:0,content:'',createdBy:'',createdOn:new Date()})
+ @Output()commentEmitter = new EventEmitter<Comment>()
 
 onAddComment(addCommentForm: NgForm) {
   const movieId = this.route.snapshot.params['id']
