@@ -37,7 +37,7 @@
         </ng-container>
 
         <ng-container *ngIf="isLoggedIn()">
-        <app-add-comment (commentEmitter)="receivedComment($event)"></app-add-comment>
+        <app-add-comment (commentEmitter)="commentWasAdded($event)"></app-add-comment>
         </ng-container>
         
     </article>
