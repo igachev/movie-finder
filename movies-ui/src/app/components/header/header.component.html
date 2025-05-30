@@ -7,6 +7,9 @@
             <li>
                 <a [routerLink]="['/movies']">Movies</a>
             </li>
+             <li>
+                <a [routerLink]="['/movies/filter-by-genre']">Search Movies By Genre</a>
+            </li>
 
             <ng-container *ngIf="!isLoggedIn">
             <li>
