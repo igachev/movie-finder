@@ -1,1 +1,29 @@
-<p>filter-movies-by-genre works!</p>
+<section>
+    <h2>Search Movies By Genre</h2>
+    <form method="get" #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)">
+        <div>
+            <label for="genreName">Genre:</label>
+            <select name="genreName" ngModel>
+                <option value="" selected>Select a genre...</option>
+                <option value="action">Action</option>
+                <option value="sci-fi">Sci-fi</option>
+                <option value="drama">Drama</option>
+                <option value="criminal">Criminal</option>
+                <option value="adventure">Adventure</option>
+                <option value="fantasy">Fantasy</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Search</button>
+        </div>
+    </form>
+    <ng-container *ngIf="movies().length > 0">
+        <article *ngFor="let movie of movies()">
+           <app-movies-card [movie]="movie"></app-movies-card>
+        </article>
+        <div>
+            <button (click)="previousPage()">Previous Page</button>
+            <button (click)="nextPage()">Next Page</button>
+        </div>
+    </ng-container>
+</section>
