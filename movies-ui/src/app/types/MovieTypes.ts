@@ -9,3 +9,10 @@ export type Movie = {
     comments: Comment[];
     genres: Genre[];
 }
+
+export type MovieRequest = {
+    title: string;
+    description: string;
+    imgUrl: string;
+    genres: Genre[];
+}
