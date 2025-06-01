@@ -12,15 +12,18 @@ import { CommonModule } from '@angular/common';
 export class HeaderComponent implements OnInit {
  userService = inject(UserService)
  isLoggedIn: boolean = false;
+ isAdmin: boolean = false;
 
  ngOnInit(): void {
   this.userService.$userSubjectObservable.subscribe({
     next: (res) => {
       if(res.token !== "") {
         this.isLoggedIn = true
+        this.isAdmin = res.email === "admin@abv.bg" ? true : false;
       }
       else {
         this.isLoggedIn = false
+        this.isAdmin = false
       }
     }
   })   

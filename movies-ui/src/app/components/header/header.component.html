@@ -19,6 +19,12 @@
                 <a [routerLink]="['/users/login']">Login</a>
             </li>
             </ng-container>
+
+            <ng-container *ngIf="isLoggedIn && isAdmin">
+                <li>
+                    <a [routerLink]="['/movies/create']">Create Movie</a>
+                </li>
+            </ng-container>
           
             <ng-container *ngIf="isLoggedIn">
             <li>
