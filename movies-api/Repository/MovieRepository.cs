@@ -46,7 +46,9 @@ namespace movies_api.Repository
         {
             try
             {
-                var movie = await _context.Movie.FirstOrDefaultAsync((m) => m.Id == id);
+                var movie = await _context.Movie
+                .Include((m) => m.Genres)
+                .FirstOrDefaultAsync((m) => m.Id == id);
                 if (movie == null)
                 {
                     throw new Exception("You cannot delete this movie because it does not exist!");
