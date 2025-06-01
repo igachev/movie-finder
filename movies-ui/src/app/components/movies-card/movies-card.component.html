@@ -8,5 +8,8 @@
         <div>
             <button (click)="goToMovie(movie.id)">Details</button>
         </div>
+        <div *ngIf="isAdmin">
+            <button (click)="deleteMovie(movie.id)">Delete</button>
+        </div>
     </article>
         
