@@ -1,7 +1,7 @@
 <section>
     <h2>Movies Page</h2>
     <ng-container *ngFor="let movie of movies()">
-        <app-movies-card [movie]="movie"></app-movies-card>
+        <app-movies-card [movie]="movie" (deleteMovieEmitter)="movieWasDeleted($event)"></app-movies-card>
     </ng-container>
     <div>
         <button (click)="previousPage()">Previous Page</button>

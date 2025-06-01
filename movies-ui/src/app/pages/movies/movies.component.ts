@@ -13,6 +13,7 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './movies.component.scss'
 })
 export class MoviesComponent implements OnInit,OnDestroy {
+
     private movieService = inject(MovieService)
 
     movies: WritableSignal<Movie[]> = signal([]);
@@ -54,6 +55,10 @@ export class MoviesComponent implements OnInit,OnDestroy {
         this.pageNumber--
         this.getMovies()
       }
+    }
+
+    movieWasDeleted($event: boolean) {
+      this.getMovies()
     }
 
     ngOnDestroy(): void {
