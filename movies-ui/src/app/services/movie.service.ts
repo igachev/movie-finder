@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { Movie } from '../types/MovieTypes';
+import { Movie, MovieRequest } from '../types/MovieTypes';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -25,4 +25,9 @@ export class MovieService {
   filterMoviesByGenre(pageNumber: number,pageSize: number,genreName: string): Observable<Movie[]> {
    return this.http.get<Movie[]>(`http://localhost:5174/movies/filterByGenre?pageNumber=${pageNumber}&pageSize=${pageSize}&genreName=${genreName}`)
   }
+
+  createMovie(movieRequest: MovieRequest) {
+    return this.http.post<Movie>("http://localhost:5174/movies",movieRequest)
+  }
+  
 }
