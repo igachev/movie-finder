@@ -16,3 +16,9 @@ export type MovieRequest = {
     imgUrl: string;
     genres: Genre[];
 }
+
+export type EditMovieRequest = {
+    title: string;
+    description: string;
+    imgUrl: string;
+}

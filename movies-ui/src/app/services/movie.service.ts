@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { Movie, MovieRequest } from '../types/MovieTypes';
+import { EditMovieRequest, Movie, MovieRequest } from '../types/MovieTypes';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -30,7 +30,7 @@ export class MovieService {
     return this.http.post<Movie>("http://localhost:5174/movies",movieRequest)
   }
 
-  editMovie(movieId: number, movieRequest: MovieRequest) {
+  editMovie(movieId: number, movieRequest: EditMovieRequest) {
     return this.http.put<Movie>(`http://localhost:5174/movies/${movieId}`,movieRequest)
   }
   
