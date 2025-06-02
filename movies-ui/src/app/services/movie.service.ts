@@ -29,6 +29,10 @@ export class MovieService {
   createMovie(movieRequest: MovieRequest) {
     return this.http.post<Movie>("http://localhost:5174/movies",movieRequest)
   }
+
+  editMovie(movieId: number, movieRequest: MovieRequest) {
+    return this.http.put<Movie>(`http://localhost:5174/movies/${movieId}`,movieRequest)
+  }
   
   deleteMovie(movieId: number) {
     return this.http.delete(`http://localhost:5174/movies/${movieId}`)

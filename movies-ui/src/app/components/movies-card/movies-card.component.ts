@@ -41,6 +41,10 @@ export class MoviesCardComponent implements OnInit,OnDestroy {
     this.router.navigate(['movies',movieId,'details'])
   }
 
+  goToEditMovie(movieId: number) {
+    this.router.navigate(['movies',movieId,'edit'])
+  }
+
   deleteMovie(movieId: number) {
     this.deleteSubscription = this.movieService.deleteMovie(movieId)
     .subscribe({

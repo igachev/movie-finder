@@ -10,6 +10,7 @@
         </div>
         <div *ngIf="isAdmin">
             <button (click)="deleteMovie(movie.id)">Delete</button>
+            <button (click)="goToEditMovie(movie.id)">Edit</button>
         </div>
     </article>
         
