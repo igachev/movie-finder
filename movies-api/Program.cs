@@ -92,6 +92,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // used to access our images uploaded to the server
 // Enable CORS
 app.UseCors("AllowAngularApp");
 

@@ -32,7 +32,8 @@ namespace movies_api.Controllers
         {
             try
             {
-                var filePath = GetFilePath(movieTitle);
+                string movieWithoutSpaces = movieTitle.Replace(" ", string.Empty).ToLower();
+                var filePath = GetFilePath(movieWithoutSpaces);
                 if (!System.IO.Directory.Exists(filePath))
                 {
                     System.IO.Directory.CreateDirectory(filePath);
@@ -50,6 +51,39 @@ Then automatically close the file, no matter what happens."
                     }
                 }
                 return Ok("Images uploaded successfully");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetImages([FromQuery] string movieTitle)
+        {
+            try
+            {
+                string movieWithoutSpaces = movieTitle.Replace(" ", string.Empty).ToLower();
+                string filePath = GetFilePath(movieWithoutSpaces);
+                List<string> imageUrls = new List<string>();
+                string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                if (System.IO.Directory.Exists(filePath))
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
+                    FileInfo[] fileInfos = directoryInfo.GetFiles();
+                    foreach (FileInfo fileInfo in fileInfos)
+                    {
+                        string fileName = fileInfo.Name;
+                        string imagePath = filePath + "\\" + fileName;
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            string imageUrl = hostUrl + "/Upload/" + movieWithoutSpaces + "/" + fileName;
+                            imageUrls.Add(imageUrl);
+                        }
+                    }
+                }
+                return Ok(imageUrls);
+
             }
             catch (Exception e)
             {
