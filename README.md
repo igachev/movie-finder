@@ -12,7 +12,7 @@
 ## Installation of dotnet API:
 1.Clone this repository: `git clone https://github.com/igachev/movie-finder.git`
 
-2.Go to folder question-game-api: `cd movie-finder`
+2.Go to folder movie-finder: `cd movie-finder`
 
 3.Go to folder movies-api: `cd movies-api`
 
