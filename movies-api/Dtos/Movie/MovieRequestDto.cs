@@ -14,7 +14,5 @@ namespace movies_api.Dtos.Movie
         public string Description { get; set; } = string.Empty;
         [Required]
         public List<string> Genres { get; set; } = new List<string>();
-        [Required]
-        public string ImgUrl { get; set; } = string.Empty;
     }
 }

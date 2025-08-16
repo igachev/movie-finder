@@ -74,7 +74,6 @@ namespace movies_api.Repository
                 }
                 movieExists.Title = movie.Title;
                 movieExists.Description = movie.Description;
-                movieExists.ImgUrl = movie.ImgUrl;
                 await _context.SaveChangesAsync();
                 return movieExists; 
             }

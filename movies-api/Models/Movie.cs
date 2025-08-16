@@ -12,7 +12,6 @@ namespace movies_api.Models
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string ImgUrl { get; set; } = string.Empty;
         // one to many -> comment
         public List<Comment> Comments { get; set; } = new List<Comment>();
         // one to many -> category

@@ -33,7 +33,6 @@ namespace movies_api.Repository
             {
                 Id = movie.Movie.Id,
                 Title = movie.Movie.Title,
-                ImgUrl = movie.Movie.ImgUrl,
                 Description = movie.Movie.Description,
                 Genres = movie.Movie.Genres
             })
