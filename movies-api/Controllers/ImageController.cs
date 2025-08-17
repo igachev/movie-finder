@@ -91,5 +91,35 @@ Then automatically close the file, no matter what happens."
             }
         }
 
+        [HttpGet]
+        [Route("remove-all")]
+        public async Task<IActionResult> RemoveImagesForMovie([FromQuery] string movieTitle)
+        {
+            try
+            {
+                string movieWithoutSpaces = movieTitle.Replace(" ", string.Empty).ToLower();
+                string filePath = GetFilePath(movieWithoutSpaces);
+                if (System.IO.Directory.Exists(filePath))
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(filePath);
+                    // get all images from that directory
+                    FileInfo[] fileInfos = directoryInfo.GetFiles();
+                    foreach (FileInfo fileInfo in fileInfos)
+                    {
+                        fileInfo.Delete();
+                    }
+                    System.IO.Directory.Delete(filePath);
+                    return Ok("Images deleted");
+                }
+                else
+                {
+                    return NotFound("Images not found.No such directory.");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
