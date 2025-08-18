@@ -9,7 +9,7 @@
     <article *ngIf="movie() !== null">
         <h4>Title: {{ movie()?.title }}</h4>
         <div>
-            <img src="{{ movie()?.imgUrl }}" alt="">
+            <!-- <img src="{{ movie()?.imgUrl }}" alt=""> -->
         </div>
         <p>Description: {{ movie()?.description }}</p>
         <p>Genre: <span *ngFor="let genre of movie()?.genres">{{ genre.genreName }} </span></p>

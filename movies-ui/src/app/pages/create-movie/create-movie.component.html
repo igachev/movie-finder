@@ -6,8 +6,8 @@
             <input type="text" name="title" formControlName="title">
         </div>
         <div>
-            <label for="imgUrl">imageUrl:</label>
-            <input type="text" name="imgUrl" formControlName="imgUrl">
+            <label for="fileCollection">add image or images:</label>
+            <input accept="image/*" multiple type="file" name="fileCollection" (change)="onSelectedImages($event)">
         </div>
         <div>
             <label for="description">Description:</label>

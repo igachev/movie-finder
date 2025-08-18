@@ -44,7 +44,7 @@ export class EditMovieComponent implements OnInit, OnDestroy {
 
           this.editMovieForm.patchValue({
             title: res.title,
-            imgUrl: res.imgUrl,
+            // imgUrl: res.imgUrl,
             description: res.description
           })
         }
