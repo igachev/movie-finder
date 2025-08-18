@@ -50,7 +50,7 @@ Then automatically close the file, no matter what happens."
                         await file.CopyToAsync(fs);
                     }
                 }
-                return Ok("Images uploaded successfully");
+                return Ok(new {message = "Images uploaded successfully"});
             }
             catch (Exception e)
             {
@@ -109,11 +109,11 @@ Then automatically close the file, no matter what happens."
                         fileInfo.Delete();
                     }
                     System.IO.Directory.Delete(filePath);
-                    return Ok("Images deleted");
+                    return Ok(new { message = "Images deleted" });
                 }
                 else
                 {
-                    return NotFound("Images not found.No such directory.");
+                    return NotFound(new { message = "Images not found.No such directory." });
                 }
             }
             catch (Exception e)
