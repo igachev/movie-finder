@@ -26,9 +26,16 @@ namespace movies_api.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Comment>()
+            .HasOne(c => c.Movie)
+            .WithMany(m => m.Comments)
+            .HasForeignKey(c => c.MovieId)
+            .OnDelete(DeleteBehavior.Cascade); // when we delete a movie delete its comments automatically
+
             // creating composite key
             builder.Entity<MovieGenre>((x) => x.HasKey(m => new { m.MovieId, m.GenreId }));
 
+            // many to many
              builder.Entity<MovieGenre>()
             .HasOne(u => u.Movie)
             .WithMany(u => u.MovieGenre)

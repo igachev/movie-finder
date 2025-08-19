@@ -82,7 +82,7 @@ Then automatically close the file, no matter what happens."
                         }
                     }
                 }
-                return Ok(imageUrls);
+                return Ok(new { images = imageUrls });
 
             }
             catch (Exception e)
