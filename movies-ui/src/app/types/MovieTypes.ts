@@ -7,6 +7,7 @@ export type Movie = {
     description: string;
     comments: Comment[];
     genres: Genre[];
+    firstImg?: string;
 }
 
 export type MovieRequest = {
