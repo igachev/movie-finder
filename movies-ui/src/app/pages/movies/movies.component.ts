@@ -1,10 +1,11 @@
 import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../types/MovieTypes';
-import { Observable, Subscription } from 'rxjs';
+import { forkJoin, map, Observable, Subscription, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
 import { RouterOutlet } from '@angular/router';
+import { ImageService } from '../../services/image.service';
 
 @Component({
   selector: 'app-movies',
@@ -15,6 +16,7 @@ import { RouterOutlet } from '@angular/router';
 export class MoviesComponent implements OnInit,OnDestroy {
 
     private movieService = inject(MovieService)
+    private imageService = inject(ImageService)
 
     movies: WritableSignal<Movie[]> = signal([]);
     loading: WritableSignal<boolean> = signal(false);
@@ -28,7 +30,20 @@ export class MoviesComponent implements OnInit,OnDestroy {
 
     getMovies() {
       this.loading.set(true)
-      this.moviesSubscription = this.movieService.getMovies(this.pageNumber,this.pageSize).subscribe({
+      this.moviesSubscription = this.movieService.getMovies(this.pageNumber,this.pageSize)
+      .pipe(
+        switchMap((movies) => {
+        const moviesAndImages = movies.map((movie) => {
+            return this.imageService.getImages(movie.title).pipe(
+              map((images) => {
+                return {...movie, firstImg: images.images[0]}
+              })
+            )
+          })
+          return forkJoin(moviesAndImages)// one big observable with array of results
+        })
+      )
+      .subscribe({
       next: (res) => {
         this.movies.set(res)
         console.log(this.movies())

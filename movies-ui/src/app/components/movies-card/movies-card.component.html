@@ -1,7 +1,7 @@
      <article>
      <h4>Title: {{ movie.title }}</h4>
         <div class="img-container">
-            <!-- <img src="{{ movie.imgUrl }}" alt="{{ movie.title }}"> -->
+            <img src="{{ movie.firstImg }}" alt="{{ movie.title }}">
         </div>
         <p>Description: {{ movie.description }}</p>
         <p>Genre: <span *ngFor="let genre of movie.genres">{{ genre.genreName }} </span></p>
