@@ -2,20 +2,25 @@
 <section>
     <h2>Movie Details</h2>
 
-    <article *ngIf="errorMessage()">
-        <h3>Error: {{ errorMessage() }}</h3>
+    <article *ngIf="errorMessage">
+        <h3>Error: {{ errorMessage }}</h3>
     </article>
 
-    <article *ngIf="movie() !== null">
-        <h4>Title: {{ movie()?.title }}</h4>
+    <article *ngIf="movie">
+        <h4>Title: {{ movie.title }}</h4>
         <div>
-            <!-- <img src="{{ movie()?.imgUrl }}" alt=""> -->
+            <img src="{{ images[0] }}" alt="Main Movie Poster">
         </div>
-        <p>Description: {{ movie()?.description }}</p>
-        <p>Genre: <span *ngFor="let genre of movie()?.genres">{{ genre.genreName }} </span></p>
+        <article>
+            <div *ngFor="let image of images; let i = index; trackBy: trackByImageIndex">
+                <img *ngIf="i > 0" src="{{ image }}" alt="movie poster {{ i }}">
+            </div>
+        </article>
+        <p>Description: {{ movie.description }}</p>
+        <p>Genre: <span *ngFor="let genre of movie?.genres">{{ genre.genreName }} </span></p>
         <h5>Comments:</h5>
-        <ng-container *ngIf="movie()?.comments!.length > 0">
-            <div *ngFor="let comment of movie()?.comments">
+        <ng-container *ngIf="movie?.comments!.length > 0">
+            <div *ngFor="let comment of movie?.comments; trackBy: trackByCommentId">
                 <h6>Username: {{ comment.createdBy }} <span>{{ comment.createdOn }}</span></h6>
                 <p>{{ comment.content }}</p>
                 <div *ngIf="comment.createdBy === username">
@@ -26,18 +31,18 @@
                 </div>
                 <ng-container *ngIf="selectedCommentId === comment.id">
                     <app-edit-comment 
-                    [movieId]="movie()!.id" 
+                    [movieId]="movie!.id" 
                     [commentId]="comment.id" 
                     (commentEmitter)="commentWasEdited($event)"></app-edit-comment>
                 </ng-container>
             </div>
         </ng-container>
 
-        <ng-container *ngIf="movie()?.comments!.length === 0">
+        <ng-container *ngIf="movie?.comments!.length === 0">
             <p>No comments yet</p>
         </ng-container>
 
-        <ng-container *ngIf="isLoggedIn()">
+        <ng-container *ngIf="isLoggedIn">
         <app-add-comment (commentEmitter)="commentWasAdded($event)"></app-add-comment>
         </ng-container>
         

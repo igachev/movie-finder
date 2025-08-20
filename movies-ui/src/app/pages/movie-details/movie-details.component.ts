@@ -1,7 +1,7 @@
-import { Component, effect, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { catchError, finalize, map, of, shareReplay, Subscription, switchMap, take } from 'rxjs';
+import { catchError, finalize, map, of, shareReplay, Subscription, switchMap, take, tap } from 'rxjs';
 import { Movie } from '../../types/MovieTypes';
 import { CommonModule } from '@angular/common';
 import { AddCommentComponent } from "../../components/add-comment/add-comment.component";
@@ -10,6 +10,7 @@ import { Comment } from '../../types/CommentTypes';
 import { FormsModule } from '@angular/forms';
 import { EditCommentComponent } from "../../components/edit-comment/edit-comment.component";
 import { CommentService } from '../../services/comment.service';
+import { ImageService } from '../../services/image.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -23,47 +24,54 @@ export class MovieDetailsComponent implements OnInit {
   private movieService = inject(MovieService)
   private userService = inject(UserService)
   private commentService = inject(CommentService)
+  private imageService = inject(ImageService)
   movieId = this.route.snapshot.params['id']
-  movie: WritableSignal<Movie | null> = signal(null)
-  loading: WritableSignal<boolean> = signal(true)
-  errorMessage: WritableSignal<string> = signal("")
-  isLoggedIn: WritableSignal<boolean> = signal(false)
+  movie!: Movie
+  loading!: boolean
+  errorMessage!: string 
+  isLoggedIn: boolean = false
   selectedCommentId!: number | null
   username!: string
-  refreshTrigger = signal<number>(0);
-     
-  constructor() {
-    effect(() => {
- // track the refresh trigger.Anytime the value of refreshTrigger changes the effect automatically re-run
-  this.refreshTrigger() 
-  this.loading.set(true);
-  this.errorMessage.set('');
-  
-  this.movieService.getMovie(this.movieId).pipe(
-    catchError((err) => {
-      this.errorMessage.set(err.error);
-      return of(null);
-    }),
-    finalize(() => this.loading.set(false))
-  ).subscribe((res) => {
-    this.movie.set(res);
-  });
-});
+  images!: string[]
+
+  getMovie() {
+    this.loading = true;
+    this.movieService.getMovie(this.movieId)
+    .pipe(
+      switchMap((movie) => {
+   return this.imageService.getImages(movie.title).pipe(
+     tap((images) => {
+      this.images = images.images
+     }),
+     map(() => movie)
+    )
+  }),
+      finalize(() => this.loading = false)
+    )
+    .subscribe({
+      next: (res) => {
+        this.movie = res;
+      },
+      error: (err) => {
+        this.errorMessage = err.error;
+      }
+    })
   }
-  
 
   ngOnInit(): void {
+
       this.userService.$userSubjectObservable.subscribe({
         next: (res) => {
-          res.token !== "" ? this.isLoggedIn.set(true) : this.isLoggedIn.set(false);
+          res.token !== "" ? this.isLoggedIn = true : this.isLoggedIn = false;
           this.username = res.userName;
         }
-      })
+      });
+
+      this.getMovie();
   }
 
-
   commentWasAdded($event: Comment) {
-   this.refreshTrigger.update((prevValue) => prevValue + 1)
+    this.getMovie()
   }
 
   showHideEdit(e:Event,commentId: number) {
@@ -77,17 +85,24 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   commentWasEdited($event: string) {
-  this.refreshTrigger.update((prevValue) => prevValue + 1)
-  this.selectedCommentId = null
+    this.getMovie()
+    this.selectedCommentId = null
   }
 
   deleteComment(commentId: number) {
     this.commentService.deleteComment(commentId).subscribe({
       next:(res) => {
-        this.refreshTrigger.update((prevValue) => prevValue + 1)
+        this.getMovie()
       }
     })
   }
 
+  trackByImageIndex(i: number, _:any): number {
+    return i;
+  }
+
+  trackByCommentId(index: number, comment: Comment) {
+    return comment.id;
+  }
   
 }
