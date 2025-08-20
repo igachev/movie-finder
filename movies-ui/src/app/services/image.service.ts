@@ -6,6 +6,10 @@ type ImageUrl = {
   images: string[];
 }
 
+type ImageResponse = {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,6 +25,10 @@ export class ImageService {
 
   getImages(movieTitle: string): Observable<ImageUrl> {
     return this.http.get<ImageUrl>(`http://localhost:5174/api/images?movieTitle=${movieTitle}`)
+  }
+
+  deleteImages(movieTitle: string): Observable<ImageResponse> {
+    return this.http.get<ImageResponse>(`http://localhost:5174/api/images/remove-all?movieTitle=${movieTitle}`)
   }
 
 }
