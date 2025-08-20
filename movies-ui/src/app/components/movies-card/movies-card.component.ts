@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { MovieService } from '../../services/movie.service';
 import { Subscription, switchMap } from 'rxjs';
+import { ImageService } from '../../services/image.service';
 
 @Component({
   selector: 'app-movies-card',
@@ -17,8 +18,10 @@ export class MoviesCardComponent implements OnInit,OnDestroy {
      private router = inject(Router)
      private userService = inject(UserService)
      private movieService = inject(MovieService)
+     private imageService = inject(ImageService)
      isAdmin: boolean = false;
      private deleteSubscription!: Subscription
+     private deleteImagesSubscription!: Subscription
      @Output() deleteMovieEmitter = new EventEmitter<boolean>()
 
   @Input({required:true}) 
@@ -49,14 +52,19 @@ export class MoviesCardComponent implements OnInit,OnDestroy {
     this.deleteSubscription = this.movieService.deleteMovie(movieId)
     .subscribe({
       next: (res) => {
-        this.deleteMovieEmitter.next(true)
+        this.deleteImages(this.movie.title);
+        this.deleteMovieEmitter.next(true);
       }
     })
   }
 
+  deleteImages(movieTitle: string): void {
+       this.deleteImagesSubscription = this.imageService.deleteImages(movieTitle).subscribe()
+  }
 
   ngOnDestroy(): void {
       this.deleteSubscription?.unsubscribe()
+      this.deleteImagesSubscription?.unsubscribe()
   }
 
 }
