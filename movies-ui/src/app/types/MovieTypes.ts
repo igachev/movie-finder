@@ -19,5 +19,5 @@ export type MovieRequest = {
 export type EditMovieRequest = {
     title: string;
     description: string;
-    imgUrl: string;
+    genres: string[];
 }
