@@ -23,9 +23,8 @@ export class EditMovieComponent implements OnInit, OnDestroy {
 
   editMovieForm = this.formBuilder.group({
     title: new FormControl(),
-    imgUrl: new FormControl(),
     description: new FormControl(),
-    genres: new FormArray([])
+    genres: new FormArray<FormControl<string>>([])
   })
 
   get genres(): FormArray {
@@ -44,7 +43,6 @@ export class EditMovieComponent implements OnInit, OnDestroy {
 
           this.editMovieForm.patchValue({
             title: res.title,
-            // imgUrl: res.imgUrl,
             description: res.description
           })
         }
@@ -53,8 +51,9 @@ export class EditMovieComponent implements OnInit, OnDestroy {
 
   onEditMovie() {
   const movieId = this.route.snapshot.params['id']
-  const { title,description,imgUrl,genres } = this.editMovieForm.value
-  const editMovieRequest: EditMovieRequest = {title,description,imgUrl}
+  const { title,description } = this.editMovieForm.value;
+  const genres = this.genres.controls.map((g) => g.value)
+  const editMovieRequest: EditMovieRequest = { title,description,genres: genres }
   this.editMovieSubscription = this.movieService.editMovie(movieId,editMovieRequest).subscribe({
     next: (res) => {
       this.router.navigate(['movies',movieId,'details'])
