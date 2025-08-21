@@ -10,6 +10,11 @@ type ImageResponse = {
   message: string;
 }
 
+export type RenameFolderRequest = {
+  oldMovieTitle: string;
+  newMovieTitle: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +34,10 @@ export class ImageService {
 
   deleteImages(movieTitle: string): Observable<ImageResponse> {
     return this.http.get<ImageResponse>(`http://localhost:5174/api/images/remove-all?movieTitle=${movieTitle}`)
+  }
+
+  renameMovieFolder(renameFolderRequest: RenameFolderRequest) {
+    return this.http.put(`http://localhost:5174/api/images/rename-folder`,renameFolderRequest);
   }
 
 }
