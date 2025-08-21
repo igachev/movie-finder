@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using movies_api.Dtos.Folder;
 
 namespace movies_api.Controllers
 {
@@ -20,7 +21,36 @@ namespace movies_api.Controllers
         [NonAction]
         private string GetFilePath(string movieTitle)
         {
-            return _environment.WebRootPath + "\\Upload\\" + movieTitle;
+            // return _environment.WebRootPath + "\\Upload\\" + movieTitle;
+            return Path.Combine(_environment.WebRootPath, "Upload", movieTitle);
+        }
+
+        [HttpPut]
+        [Route("rename-folder")]
+        public async Task<IActionResult> RenameFolder([FromBody] RenameFolderRequestDto renameFolderRequestDto)
+        {
+            try
+            {
+                string oldMovieWithoutSpaces = renameFolderRequestDto.OldMovieTitle.Replace(" ", string.Empty).ToLower();
+                string newMovieWithoutSpaces = renameFolderRequestDto.NewMovieTitle.Replace(" ", string.Empty).ToLower();
+                var oldFilePath = GetFilePath(oldMovieWithoutSpaces);
+                var newFilePath = GetFilePath(newMovieWithoutSpaces);
+                if (System.IO.Directory.Exists(oldFilePath))
+                {
+                    System.IO.Directory.Move(oldFilePath, newFilePath);
+                    return Ok(new { message = "directory renamed successfully" });
+                }
+                else
+                {
+                    return NotFound(new { message = "directory does not exists!" });
+                }
+            }
+            catch (Exception e)
+            {
+                // return BadRequest(e.Message);
+                return BadRequest(new { error = e.ToString() });
+
+            }
         }
 
         [HttpPut]
