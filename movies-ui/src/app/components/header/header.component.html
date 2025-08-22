@@ -1,37 +1,37 @@
-<article class="p-2 ">
-    <nav class="w-6/6 bg-yellow-900 px-3 py-5 my-2 rounded-lg">
-        <ul class=" sm:flex sm:flex-col sm:justify-center sm:items-center md:flex-row text-white sm:text-sm md:text-xl">
-            <li class="p-1 m-0.5">
+<header class="p-2 ">
+    <nav class="w-6/6 bg-slate-500 px-3 py-5 my-2 rounded-lg">
+        <ul class="flex flex-col justify-center items-center text-sm md:flex-row text-white sm:text-base md:text-xl">
+            <li class="p-1 my-0.5 mx-2">
                 <a [routerLink]="['/']" class="cursor-pointer hover:text-sky-400 transition duration-400">Home</a>
             </li>
-            <li class="p-1 m-0.5">
+            <li class="p-1 my-0.5 mx-2">
                 <a [routerLink]="['/movies']" class="cursor-pointer hover:text-sky-400 transition duration-400">Movies</a>
             </li>
-             <li class="p-1 m-0.5">
+             <li class="p-1 my-0.5 mx-2">
                 <a [routerLink]="['/movies/filter-by-genre']" class="cursor-pointer hover:text-sky-400 transition duration-400">Search Movies By Genre</a>
             </li>
 
             <ng-container *ngIf="!isLoggedIn">
-            <li class="p-1 m-0.5">
+            <li class="p-1 my-0.5 mx-2">
                 <a [routerLink]="['/users/register']" class="cursor-pointer hover:text-sky-400 transition duration-400">Register</a>
             </li>
-            <li class="p-1 m-0.5">
+            <li class="p-1 my-0.5 mx-2">
                 <a [routerLink]="['/users/login']" class="cursor-pointer hover:text-sky-400 transition duration-400">Login</a>
             </li>
             </ng-container>
 
             <ng-container *ngIf="isLoggedIn && isAdmin">
-                <li class="p-1 m-0.5">
+                <li class="p-1 my-0.5 mx-2">
                     <a [routerLink]="['/movies/create']" class="cursor-pointer hover:text-sky-400 transition duration-400">Create Movie</a>
                 </li>
             </ng-container>
           
             <ng-container *ngIf="isLoggedIn">
-            <li class="p-1 m-0.5">
+            <li class="p-1 my-0.5 mx-2">
                 <button (click)="logout()" class="cursor-pointer hover:text-sky-400 transition duration-400">Logout</button>
             </li>
             </ng-container>
            
         </ul>
     </nav>
-</article>
+</header>
