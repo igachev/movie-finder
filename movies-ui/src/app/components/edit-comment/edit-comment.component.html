@@ -1,6 +1,7 @@
 <article>
-    <input type="text" [(ngModel)]="editedComment">
+    <textarea [(ngModel)]="editedComment" class="edit-comment-textarea border rounded-md p-2 my-2">
+    </textarea>
     <div>
-        <button (click)="editComment()">Edit Comment</button>
+        <button (click)="editComment()" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Edit Comment</button>
     </div>
 </article>
