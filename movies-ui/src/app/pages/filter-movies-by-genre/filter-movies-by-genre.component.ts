@@ -18,26 +18,21 @@ export class FilterMoviesByGenreComponent {
   pageNumber = signal(1)
   pageSize = signal(2)
   currentGenre = signal("")
-  movies: WritableSignal<Movie[]> = signal([])
+  filteredMovies: WritableSignal<Movie[]> = this.movieService.filteredMovies
 
   constructor() {
     effect(() => {
-      if(this.currentGenre() === '') return; // avoid triggering the effect
-      this.pageNumber() // keep track of the page number.If it changes rerun the effect
-this.movieService.filterMoviesByGenre(this.pageNumber(),this.pageSize(),this.currentGenre())
-// .pipe(takeUntilDestroyed()) // It ensures your .subscribe() is automatically unsubscribed Every time your effect() re-runs due to signal changes
-.subscribe({
-    next: (res) => {
-      this.movies.set(res)
-    }
-  })
+      this.pageNumber()
+      if(this.currentGenre() === '') return;
+      this.movieService.filterMoviesByGenre(this.pageNumber(),this.pageSize(),this.currentGenre());
     })
   }
 
+
   onSearch(searchForm: NgForm) {
   const { genreName } = searchForm.value;
-  this.currentGenre.set(genreName)
-  this.pageNumber.set(1)
+  this.currentGenre.set(genreName);
+  this.pageNumber.set(1);
 }
 
 nextPage() {
