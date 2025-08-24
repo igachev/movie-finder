@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { EditMovieRequest, Movie, MovieRequest } from '../types/MovieTypes';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { ImageService } from './image.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovieService {
 
- 
+   filteredMovies: WritableSignal<Movie[]> = signal([])
+   imageService = inject(ImageService)
 
   constructor(
     private http: HttpClient
@@ -22,8 +24,25 @@ export class MovieService {
     return this.http.get<Movie>(`http://localhost:5174/movies/${movieId}`)
   }
 
-  filterMoviesByGenre(pageNumber: number,pageSize: number,genreName: string): Observable<Movie[]> {
-   return this.http.get<Movie[]>(`http://localhost:5174/movies/filterByGenre?pageNumber=${pageNumber}&pageSize=${pageSize}&genreName=${genreName}`)
+  filterMoviesByGenre(pageNumber: number,pageSize: number,genreName: string): void {
+   this.http.get<Movie[]>(`http://localhost:5174/movies/filterByGenre?pageNumber=${pageNumber}&pageSize=${pageSize}&genreName=${genreName}`)
+   .pipe(
+           switchMap((movies) => {
+           const moviesAndImages = movies.map((movie) => {
+               return this.imageService.getImages(movie.title).pipe(
+                 map((images) => {
+                   return {...movie, firstImg: images.images[0]}
+                 })
+               )
+             })
+             return forkJoin(moviesAndImages)// one big observable with array of results
+           })
+         )
+   .subscribe({
+    next: (res) => {
+      this.filteredMovies.set(res)
+    }
+   })
   }
 
   createMovie(movieRequest: MovieRequest) {
