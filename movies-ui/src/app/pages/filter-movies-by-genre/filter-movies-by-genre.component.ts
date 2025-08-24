@@ -25,7 +25,7 @@ export class FilterMoviesByGenreComponent {
       if(this.currentGenre() === '') return; // avoid triggering the effect
       this.pageNumber() // keep track of the page number.If it changes rerun the effect
 this.movieService.filterMoviesByGenre(this.pageNumber(),this.pageSize(),this.currentGenre())
-.pipe(takeUntilDestroyed()) // It ensures your .subscribe() is automatically unsubscribed Every time your effect() re-runs due to signal changes
+// .pipe(takeUntilDestroyed()) // It ensures your .subscribe() is automatically unsubscribed Every time your effect() re-runs due to signal changes
 .subscribe({
     next: (res) => {
       this.movies.set(res)
