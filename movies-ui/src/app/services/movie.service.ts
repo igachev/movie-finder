@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { EditMovieRequest, Movie, MovieRequest } from '../types/MovieTypes';
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { ImageService } from './image.service';
 
 @Injectable({
@@ -28,6 +28,9 @@ export class MovieService {
    this.http.get<Movie[]>(`http://localhost:5174/movies/filterByGenre?pageNumber=${pageNumber}&pageSize=${pageSize}&genreName=${genreName}`)
    .pipe(
            switchMap((movies) => {
+            if(movies.length === 0) {
+              return of([])
+            }
            const moviesAndImages = movies.map((movie) => {
                return this.imageService.getImages(movie.title).pipe(
                  map((images) => {
