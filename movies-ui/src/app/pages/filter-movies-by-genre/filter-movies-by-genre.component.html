@@ -26,4 +26,7 @@
             <button (click)="nextPage()">Next Page</button>
         </div>
     </ng-container>
+    <ng-container *ngIf="filteredMovies().length === 0 && currentGenre() !== ''">
+        <h3>There are no movies of this genre.Please try other genres.</h3>
+    </ng-container>
 </section>
