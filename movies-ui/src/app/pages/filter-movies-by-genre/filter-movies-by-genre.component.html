@@ -1,9 +1,9 @@
-<section>
-    <h2>Search Movies By Genre</h2>
-    <form method="get" #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)">
+<section class="w-11/12 mx-auto flex flex-col bg-slate-300 rounded-lg my-3 p-3 ">
+    <h2 class="text-xl sm:text-xl md:text-4xl py-2 px-1 font-bold tracking-wide uppercase text-center">Search Movies By Genre</h2>
+    <form method="get" #searchForm="ngForm" (ngSubmit)="onSearch(searchForm)" class=" flex flex-col items-center gap-4 bg-slate-400 border border-gray-200 rounded p-3">
         <div>
-            <label for="genreName">Genre:</label>
-            <select name="genreName" ngModel>
+            <label for="genreName" class="text-lg sm:text-xl md:text-2xl mx-2">Genre:</label>
+            <select name="genreName" ngModel class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300 font-serif">
                 <option value="" selected>Select a genre...</option>
                 <option value="action">Action</option>
                 <option value="sci-fi">Sci-fi</option>
@@ -14,19 +14,19 @@
             </select>
         </div>
         <div>
-            <button type="submit">Search</button>
+            <button type="submit" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Search</button>
         </div>
     </form>
     <ng-container *ngIf="filteredMovies().length > 0">
         <article *ngFor="let movie of filteredMovies()">
            <app-movies-card [movie]="movie"></app-movies-card>
         </article>
-        <div>
-            <button (click)="previousPage()">Previous Page</button>
-            <button (click)="nextPage()">Next Page</button>
+        <div class="flex flex-wrap bg-slate-500 p-5 rounded-xl justify-center items-center text-white">
+            <button (click)="previousPage()" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 mx-2 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Previous Page</button>
+            <button (click)="nextPage()" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Next Page</button>
         </div>
     </ng-container>
     <ng-container *ngIf="filteredMovies().length === 0 && currentGenre() !== ''">
-        <h3>There are no movies of this genre.Please try other genres.</h3>
+        <h3 class="text-xl sm:text-xl md:text-4xl py-2 px-1 font-bold tracking-wide text-center">There are no movies of this genre.Please try other genres.</h3>
     </ng-container>
 </section>
