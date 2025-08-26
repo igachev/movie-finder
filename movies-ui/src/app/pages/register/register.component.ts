@@ -29,17 +29,9 @@ onRegister(registerForm: NgForm) {
       this.router.navigate(['movies'])
     },
     error: (err) => {
-      let errorList: string[] = []
-      if(err.error.length > 0) {
-      for(let i = 0; i < err.error.length; i++) {
-        errorList.push(err.error[i].description)
-      }
+    let errorList: string[] = []
+      errorList.push(err.error)
       this.errors.set(errorList)
-      }
-      if(err.error !== "") {
-        errorList.push(err.error)
-        this.errors.set(errorList)
-      }
     }
   })
 }

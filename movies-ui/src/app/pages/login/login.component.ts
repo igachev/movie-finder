@@ -29,16 +29,8 @@ export class LoginComponent implements OnDestroy {
       },
       error: (err) => {
       let errorList: string[] = []
-      if(err.error.length > 0) {
-      for(let i = 0; i < err.error.length; i++) {
-        errorList.push(err.error[i].description)
-      }
+      errorList.push(err.error)
       this.errors.set(errorList)
-      }
-      if(err.error !== "") {
-        errorList.push(err.error)
-        this.errors.set(errorList)
-      }
       }
     })
   }
