@@ -3,6 +3,7 @@ import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./components/header/header.component";
 import { UserService } from './services/user.service';
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, HeaderComponent],
@@ -11,7 +12,7 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent implements OnInit {
   title = 'movies-ui';
-  userService = inject(UserService)
+  private userService = inject(UserService)
 
   ngOnInit(): void {
       this.userService.autoLogin()

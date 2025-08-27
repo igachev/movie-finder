@@ -4,6 +4,7 @@ import { provideRouter, withComponentInputBinding, withRouterConfig } from '@ang
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { loadingInterceptor } from './interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,6 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withRouterConfig({paramsInheritanceStrategy: 'always'})
       ),
-      provideHttpClient(withInterceptors([authInterceptor]))
+      provideHttpClient(withInterceptors([authInterceptor,loadingInterceptor]))
     ]
 };
