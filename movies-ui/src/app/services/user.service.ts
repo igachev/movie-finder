@@ -44,4 +44,14 @@ export class UserService {
     }
   }
 
+  isLoggedIn(): boolean {
+    let userSubject = this.userSubject.getValue();
+    return userSubject.email !== "" ? true : false;
+  }
+
+  isAdmin(): boolean {
+    let userSubject = this.userSubject.getValue();
+    return userSubject.email === "admin@abv.bg" ? true : false;
+  }
+
 }
