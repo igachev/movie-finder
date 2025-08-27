@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
 import { RouterOutlet } from '@angular/router';
 import { ImageService } from '../../services/image.service';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-movies',
-  imports: [CommonModule, MoviesCardComponent],
+  imports: [CommonModule, MoviesCardComponent, LoadingSpinnerComponent],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss'
 })

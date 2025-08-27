@@ -12,6 +12,7 @@
         <div>
             <button type="submit" [disabled]="!loginForm.valid" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Login</button>
         </div>
+        <app-loading-spinner></app-loading-spinner>
         <ng-container *ngIf="errors().length > 0">
             <div>
                 <p *ngFor="let error of errors()">{{ error }}</p>

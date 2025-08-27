@@ -6,6 +6,7 @@ import { MovieRequest } from '../../types/MovieTypes';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ImageService } from '../../services/image.service';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 type MovieForm = {
   title: FormControl<string>;
@@ -15,7 +16,7 @@ type MovieForm = {
 
 @Component({
   selector: 'app-create-movie',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, LoadingSpinnerComponent],
   templateUrl: './create-movie.component.html',
   styleUrl: './create-movie.component.scss'
 })

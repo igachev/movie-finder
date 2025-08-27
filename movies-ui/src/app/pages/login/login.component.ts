@@ -5,10 +5,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { UserLoginRequest } from '../../types/UserTypes';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule, LoadingSpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

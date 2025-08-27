@@ -5,10 +5,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Comment, CommentRequest } from '../../types/CommentTypes';
 import { UserService } from '../../services/user.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-add-comment',
-  imports: [FormsModule],
+  imports: [FormsModule, LoadingSpinnerComponent],
   templateUrl: './add-comment.component.html',
   styleUrl: './add-comment.component.scss'
 })

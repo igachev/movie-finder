@@ -2,10 +2,11 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { CommentService } from '../../services/comment.service';
 import { FormsModule } from '@angular/forms';
 import { CommentRequest } from '../../types/CommentTypes';
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-edit-comment',
-  imports: [FormsModule],
+  imports: [FormsModule, LoadingSpinnerComponent],
   templateUrl: './edit-comment.component.html',
   styleUrl: './edit-comment.component.scss'
 })

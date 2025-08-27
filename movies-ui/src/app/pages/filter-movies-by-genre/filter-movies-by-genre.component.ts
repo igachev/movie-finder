@@ -5,10 +5,11 @@ import { Movie } from '../../types/MovieTypes';
 import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-filter-movies-by-genre',
-  imports: [FormsModule, CommonModule, MoviesCardComponent],
+  imports: [FormsModule, CommonModule, MoviesCardComponent, LoadingSpinnerComponent],
   templateUrl: './filter-movies-by-genre.component.html',
   styleUrl: './filter-movies-by-genre.component.scss'
 })

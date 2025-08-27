@@ -11,10 +11,11 @@ import { FormsModule } from '@angular/forms';
 import { EditCommentComponent } from "../../components/edit-comment/edit-comment.component";
 import { CommentService } from '../../services/comment.service';
 import { ImageService } from '../../services/image.service';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-movie-details',
-  imports: [CommonModule, AddCommentComponent, FormsModule, EditCommentComponent],
+  imports: [CommonModule, AddCommentComponent, FormsModule, EditCommentComponent, LoadingSpinnerComponent],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })

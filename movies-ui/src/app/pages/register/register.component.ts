@@ -5,10 +5,11 @@ import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserRegisterRequest } from '../../types/UserTypes';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule, LoadingSpinnerComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })

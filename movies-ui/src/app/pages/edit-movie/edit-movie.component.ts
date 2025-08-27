@@ -6,10 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EditMovieRequest, Movie, MovieRequest } from '../../types/MovieTypes';
 import { Subscription } from 'rxjs';
 import { ImageService, RenameFolderRequest } from '../../services/image.service';
+import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-edit-movie',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LoadingSpinnerComponent],
   templateUrl: './edit-movie.component.html',
   styleUrl: './edit-movie.component.scss'
 })
