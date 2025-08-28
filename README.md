@@ -45,7 +45,25 @@
 - `GET /movies/:id`: it shows particular movie
 - `PUT /movies/:id`: it edits particular movie
 - `DELETE /movies/:id`: it deletes particular movie
-- `POST /comments/:movieId`: it adds a comment to particular movie
-- `GET /comments/:commentId`: it shows particular comment
-- `PUT /comments/movie/:movieId/comment/:commentId`: it edits particular comment
-- `DELETE /comments/:commentId`: it deletes particular comment
+
+
+## Front-end documentation:
+<p>This UI is built using Angular,Tailwind CSS</p>
+
+## Installation:
+8. make sure you have completed the above mentioned back end installation
+9. Go to folder question-game-ui: `cd movies-ui`
+10. Install the necessary dependencies: `npm install`
+11. Run the UI: `ng serve`
+
+## Routes:
+- `/`: it shows the Home page.Available for all users.
+- `/users/register`: it shows the Register page.Available only for guest user.
+- `/users/login`: it shows the Login page.Available only for guest user.
+- `/movies`: it shows the list of movies.There are 2 movies per page because of the pagination.Available for all users.Available for all users.
+- `/movies/create`: it shows the form for creating a movie.Available only for admin user.
+- `/movies/filter-by-genre`: it shows the movie list filtered by a genre.Pagination is applied and it shows 2 movies per page.Available for all users.
+- `/movies/:id`: it shows details for particular movie,comments.Available for all users.
+- `/movies/:id/edit`: it edits movie details.Available only for admin user.
+
+
