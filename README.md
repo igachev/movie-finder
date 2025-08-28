@@ -45,6 +45,13 @@
 - `GET /movies/:id`: it shows particular movie
 - `PUT /movies/:id`: it edits particular movie
 - `DELETE /movies/:id`: it deletes particular movie
+- `POST /comments/:movieId`: it creates a comment for particular movie
+- `PUT /comments/:movieId/comment/:commentId`: it edits particular comment for specific movie.
+- `DELETE /comments/:commentId`: it deletes a comment
+- `PUT /api/images/upload?movieTitle=`: it uploads image/images to the server
+- `GET /api/images?movieTitle=`: it shows the images for particular movie
+- `GET /api/images/remove-all?movieTitle=`: it deletes all images for particular movie.
+- `PUT /api/images/rename-folder`: when we change the movie title this endpoint will edit the name of the folder where the images for that movie are stored.
 
 
 ## Front-end documentation:
