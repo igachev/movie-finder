@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { UserLoginRequest } from '../../types/UserTypes';
 import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
+import { EmailDirective } from "../../directives/email.directive";
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule, LoadingSpinnerComponent],
+  imports: [FormsModule, CommonModule, LoadingSpinnerComponent, EmailDirective],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -21,6 +22,7 @@ export class LoginComponent implements OnDestroy {
 
   onLogin(loginForm: NgForm) {
     const {email,password} = loginForm.value
+    console.log(loginForm)
     const userLoginRequest: UserLoginRequest = {email,password}
     this.loginSubscription = this.userService.login(userLoginRequest).subscribe({
       next: (res) => {
