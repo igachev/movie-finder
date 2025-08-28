@@ -12,7 +12,7 @@
         <h4 class="text-center text-lg sm:text-2xl md:text-3xl font-bold py-1 indent-3 font-mono">Title: {{ movie.title }}</h4>
         <article class="flex flex-row gap-3 flex-wrap justify-center">
             <div *ngFor="let image of images; let i = index; trackBy: trackByImageIndex" class="w-[450px]">
-                <img src="{{ image }}" alt="movie poster {{ i }}" class="rounded-md">
+                <img appImgModal src="{{ image }}" alt="movie poster {{ i }}" class="rounded-md cursor-pointer">
             </div>
         </article>
                       <p class="text-sm font-light sm:text-base md:text-xl py-1 font-serif">Description: {{ movie.description }}</p>

@@ -12,10 +12,11 @@ import { EditCommentComponent } from "../../components/edit-comment/edit-comment
 import { CommentService } from '../../services/comment.service';
 import { ImageService } from '../../services/image.service';
 import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
+import { ImgModalDirective } from "../../directives/img-modal.directive";
 
 @Component({
   selector: 'app-movie-details',
-  imports: [CommonModule, AddCommentComponent, FormsModule, EditCommentComponent, LoadingSpinnerComponent],
+  imports: [CommonModule, AddCommentComponent, FormsModule, EditCommentComponent, LoadingSpinnerComponent, ImgModalDirective],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss'
 })
