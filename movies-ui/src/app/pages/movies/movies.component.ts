@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
 import { RouterOutlet } from '@angular/router';
 import { ImageService } from '../../services/image.service';
-import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
+import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-movies',
-  imports: [CommonModule, MoviesCardComponent, LoadingSpinnerComponent],
+  imports: [CommonModule, MoviesCardComponent,LoadingSpinnerComponent],
   templateUrl: './movies.component.html',
   styleUrl: './movies.component.scss'
 })
@@ -18,9 +18,7 @@ export class MoviesComponent implements OnInit,OnDestroy {
 
     private movieService = inject(MovieService)
     private imageService = inject(ImageService)
-
     movies: WritableSignal<Movie[]> = signal([]);
-    loading: WritableSignal<boolean> = signal(false);
     private pageNumber: number = 1;
     private pageSize: number = 2;
     private moviesSubscription!: Subscription;
@@ -30,7 +28,6 @@ export class MoviesComponent implements OnInit,OnDestroy {
     }
 
     getMovies() {
-      this.loading.set(true)
       this.moviesSubscription = this.movieService.getMovies(this.pageNumber,this.pageSize)
       .pipe(
         switchMap((movies) => {
@@ -53,7 +50,6 @@ export class MoviesComponent implements OnInit,OnDestroy {
         console.log(err.error.errors)
       },
       complete: () => {
-        this.loading.set(false)
       }
     })
     }
