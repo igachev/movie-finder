@@ -1,6 +1,9 @@
 <section class="w-11/12 p-3 mx-auto flex flex-col items-center justify-center bg-slate-200 rounded-lg">
     <h2 class="text-xl sm:text-xl md:text-4xl py-2 px-1 font-bold tracking-wide uppercase">Movies Page</h2>
         <app-loading-spinner></app-loading-spinner>
+        <ng-container *ngIf="errorMessage">
+            <p class="text-base text-red-500 sm:text-lg md:text-xl py-2">{{ errorMessage }}</p>
+        </ng-container>
     <div class="w-11/12" *ngFor="let movie of movies()">
         <app-movies-card [movie]="movie" (deleteMovieEmitter)="movieWasDeleted($event)"></app-movies-card>
     </div>

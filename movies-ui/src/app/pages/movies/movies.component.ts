@@ -22,6 +22,7 @@ export class MoviesComponent implements OnInit,OnDestroy {
     private pageNumber: number = 1;
     private pageSize: number = 2;
     private moviesSubscription!: Subscription;
+    errorMessage!: string;
 
     ngOnInit(): void {
      this.getMovies()
@@ -45,9 +46,11 @@ export class MoviesComponent implements OnInit,OnDestroy {
       next: (res) => {
         this.movies.set(res)
         console.log(this.movies())
+        this.errorMessage = ''
       },
       error: (err) => {
-        console.log(err.error.errors)
+        console.log(err)
+        this.errorMessage = "Error occured.Movies not found."
       },
       complete: () => {
       }

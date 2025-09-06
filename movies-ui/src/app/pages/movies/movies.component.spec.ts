@@ -4,7 +4,7 @@ import { MoviesComponent } from './movies.component';
 import { Movie } from '../../types/MovieTypes';
 import { MovieService } from '../../services/movie.service';
 import { createMock } from '@testing-library/angular/jest-utils';
-import { BehaviorSubject, delay, of } from 'rxjs';
+import { BehaviorSubject, delay, of, throwError } from 'rxjs';
 import { ImageService, ImageUrl } from '../../services/image.service';
 import { UserService } from '../../services/user.service';
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
@@ -189,6 +189,48 @@ describe('MoviesComponent', () => {
     expect(firstMovieTitle).toBeInTheDocument()
     expect(secondMovieTitle).toBeInTheDocument()
     expect(thirdMovieTitle).not.toBeInTheDocument()
+  })
+
+   test("should display error message if movies don't appear", async() => {
+    const errorMessage = "Error occured.Movies not found.";
+    const movieService = createMock(MovieService);
+    const imageService = createMock(ImageService);
+    const userService = {
+      $userSubjectObservable: mockUserSubject.asObservable()
+    };
+
+    movieService.getMovies = jest.fn((pageNumber: number, pageSize: number) => {
+      const start = (pageNumber - 1) * pageSize;
+      const end = start + pageSize;
+      return throwError(() => errorMessage);
+      });
+    imageService.getImages = jest.fn(() => of(mockImages));
+
+
+      const {fixture} = await render(MoviesComponent,{
+        declarations:[LoadingSpinnerComponent],
+      componentProviders: [
+        {
+          provide: MovieService,
+          useValue: movieService
+        },
+        {
+          provide: ImageService,
+          useValue: imageService
+        },
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+     const component = fixture.componentInstance;
+     (component as any).pageNumber = 1;
+     (component as any).pageSize = 2;       
+    const errorText = await screen.findByText(new RegExp(errorMessage,'i'))
+    expect(errorText).toBeInTheDocument()
+    expect(movieService.getMovies).toHaveBeenCalledWith((component as any).pageNumber,(component as any).pageSize)
+    
   })
 
   test("should display the loading spinner when the user makes request for the movies", async() => {
