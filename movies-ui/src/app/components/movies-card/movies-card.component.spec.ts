@@ -1,4 +1,3 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MoviesCardComponent } from './movies-card.component';
 import { Movie } from '../../types/MovieTypes';
@@ -8,8 +7,16 @@ import { createMock } from '@testing-library/angular/jest-utils';
 import { BehaviorSubject } from 'rxjs';
 import { render,screen } from '@testing-library/angular';
 import { UserService } from '../../services/user.service';
+import userEvent from '@testing-library/user-event';
+import { MovieDetailsComponent } from '../../pages/movie-details/movie-details.component';
+import { Router } from '@angular/router';
+
 
 describe('MoviesCardComponent', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  })
 
   const movieMock: Movie = {
       id: 1,
@@ -33,8 +40,6 @@ describe('MoviesCardComponent', () => {
         "http://localhost:5174/Upload/batmanbegins/keegan-houser--Q_t4SCN8c4-unsplash.jpg"
     ]
   };
-
-
 
   test("should display title,description,image,genres correctly",async () => {
 
@@ -87,5 +92,169 @@ describe('MoviesCardComponent', () => {
     expect(movieGenre).toBeInTheDocument()
   }
  
+  })
+
+  test("should have button 'Details'",async () => {
+
+   const mockUserSubject = new BehaviorSubject({
+    email: 'ivan@abv.bg',
+    token: '1234',
+    userName: 'ivan'
+    });
+
+  const movieService: MovieService = createMock(MovieService);
+  const imageService: ImageService = createMock(ImageService);
+  const userService = {
+    $userSubjectObservable: mockUserSubject.asObservable()
+  };
+  const deleteMovieEmitterMock = jest.fn();
+
+  await render(MoviesCardComponent,{
+    inputs: {
+      movie: movieMock
+    },
+    on: {
+      deleteMovieEmitter: deleteMovieEmitterMock
+    },
+      componentProviders: [
+            {
+              provide: MovieService,
+              useValue: movieService
+            },
+            {
+              provide: ImageService,
+              useValue: imageService
+            },
+            {
+              provide: UserService,
+              useValue: userService
+            }
+          ]
+  });
+
+  const detailsBtn = await screen.findByRole("button",{name: /details/i})
+  expect(detailsBtn).toBeInTheDocument()
+  })
+
+  test("clicking on button 'Details' should invoke goToMovie() method",async () => {
+
+   const mockUserSubject = new BehaviorSubject({
+    email: 'ivan@abv.bg',
+    token: '1234',
+    userName: 'ivan'
+    });
+  const user = userEvent.setup()
+
+  const movieService: MovieService = createMock(MovieService);
+  const imageService: ImageService = createMock(ImageService);
+  const userService = {
+    $userSubjectObservable: mockUserSubject.asObservable()
+  };
+  const deleteMovieEmitterMock = jest.fn();
+  const router = {
+    navigate: jest.fn()
+  }
+
+const {fixture} = await render(MoviesCardComponent,{
+    inputs: {
+      movie: movieMock
+    },
+    on: {
+      deleteMovieEmitter: deleteMovieEmitterMock
+    },
+      componentProviders: [
+            {
+              provide: MovieService,
+              useValue: movieService
+            },
+            {
+              provide: ImageService,
+              useValue: imageService
+            },
+            {
+              provide: UserService,
+              useValue: userService
+            },
+            {
+              provide: Router,
+              useValue: router
+            }
+          ],
+          routes: [
+            {
+              path: 'movies/:id/details',
+              component: MovieDetailsComponent
+            }
+          ]
+  });
+  const component = fixture.componentInstance;
+  const goToMovieSpy = jest.spyOn(component,"goToMovie")
+  const detailsBtn = await screen.findByRole("button",{name: /details/i})
+  expect(detailsBtn).toBeInTheDocument()
+  await user.click(detailsBtn)
+  expect(goToMovieSpy).toHaveBeenCalledTimes(1)
+  expect(goToMovieSpy).toHaveBeenCalledWith(movieMock.id)
+  })
+
+  test("clicking on button 'Details' should use router.navigate and redirect user to /movies/:id/details",async () => {
+
+   const mockUserSubject = new BehaviorSubject({
+    email: 'ivan@abv.bg',
+    token: '1234',
+    userName: 'ivan'
+    });
+  const user = userEvent.setup()
+
+  const movieService: MovieService = createMock(MovieService);
+  const imageService: ImageService = createMock(ImageService);
+  const userService = {
+    $userSubjectObservable: mockUserSubject.asObservable()
+  };
+  const deleteMovieEmitterMock = jest.fn();
+  const router = {
+    navigate: jest.fn()
+  }
+
+const {fixture} = await render(MoviesCardComponent,{
+    inputs: {
+      movie: movieMock
+    },
+    on: {
+      deleteMovieEmitter: deleteMovieEmitterMock
+    },
+      componentProviders: [
+            {
+              provide: MovieService,
+              useValue: movieService
+            },
+            {
+              provide: ImageService,
+              useValue: imageService
+            },
+            {
+              provide: UserService,
+              useValue: userService
+            },
+            {
+              provide: Router,
+              useValue: router
+            }
+          ],
+          routes: [
+            {
+              path: 'movies/:id/details',
+              component: MovieDetailsComponent
+            }
+          ]
+  });
+  const component = fixture.componentInstance;
+  const goToMovieSpy = jest.spyOn(component,"goToMovie")
+  const detailsBtn = await screen.findByRole("button",{name: /details/i})
+  expect(detailsBtn).toBeInTheDocument()
+  await user.click(detailsBtn)
+  expect(goToMovieSpy).toHaveBeenCalledTimes(1)
+  expect(goToMovieSpy).toHaveBeenCalledWith(movieMock.id)
+  expect(router.navigate).toHaveBeenCalledWith(["movies",movieMock.id,"details"])
+  expect(router.navigate).toHaveBeenCalledTimes(1)
   })
 });
