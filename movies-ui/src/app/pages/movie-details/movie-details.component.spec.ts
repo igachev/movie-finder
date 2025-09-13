@@ -38,6 +38,12 @@ describe('MovieDetailsComponent', () => {
             createdOn: new Date("2025-08-23T20:10:59.0257388"),
             createdBy: "admin"
         },
+        {
+          id: 15,
+          content: "epic movie!",
+          createdOn: new Date("2025-08-25T21:12:39.0257388"),
+          createdBy: "ivan"
+        }
         ],
         genres: [
               {
@@ -163,5 +169,392 @@ describe('MovieDetailsComponent', () => {
       const movieImages = await screen.findAllByRole("img")
       const uniqueSrcs = [...new Set(movieImages.map(img => img.getAttribute("src")))]
       expect(uniqueSrcs).toEqual(imagesMock.images)
+    })
+
+    test("should show movie comments",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      for(let i = 0; i < movieMock.comments.length; i++) {
+        let comment = await screen.findByText(new RegExp(movieMock.comments[i].content,'i'))
+        expect(comment).toBeInTheDocument()
+      }
+      
+    })
+
+    test("should show authors of comments",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      for(let i = 0; i < movieMock.comments.length; i++) {
+        let authorOfComments = await screen.findAllByText(new RegExp(movieMock.comments[i].createdBy,'i'))
+        authorOfComments.forEach((author) => {
+          expect(author).toBeInTheDocument()
+        })
+      }
+      
+    })
+
+    test("should show creation dates of comments",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      for(let i = 0; i < movieMock.comments.length; i++) {
+        let date = movieMock.comments[i].createdOn;
+        let formatDate = date.getFullYear() + '-' + 
+        (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1) + '-' + 
+        date.getDate() + " " +
+        (date.getHours() < 10 ? '0' : '') + date.getHours() + ':' + 
+        (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ':' + 
+        (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+        let commentCreatedOn = await screen.findByText(new RegExp(formatDate,'i'))
+          expect(commentCreatedOn).toBeInTheDocument()
+      }
+      
+    })
+
+    test("guest user should not see 'Edit' buttons",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: '',
+        token: '',
+        userName: ''
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const editButtons = await screen.queryAllByRole("button",{name:/edit/i})
+      editButtons.forEach((editBtn) => {
+        expect(editBtn).not.toBeInTheDocument()
+      })
+      
+    })
+
+    test("guest user should not see 'Delete' buttons",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: '',
+        token: '',
+        userName: ''
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const deleteButtons = await screen.queryAllByRole("button",{name:/delete/i})
+      deleteButtons.forEach((deleteBtn) => {
+        expect(deleteBtn).not.toBeInTheDocument()
+      })
+      
+    })
+
+    test("logged-in user should see 'Edit' buttons",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const editButtons = await screen.findAllByRole("button",{name:/edit/i})
+      editButtons.forEach((editBtn) => {
+        expect(editBtn).toBeInTheDocument()
+      })
+      
+    })
+
+    test("logged-in user should see 'Delete' buttons",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const deleteButtons = await screen.findAllByRole("button",{name:/delete/i})
+      deleteButtons.forEach((deleteBtn) => {
+        expect(deleteBtn).toBeInTheDocument()
+      })
+      
     })
 });
