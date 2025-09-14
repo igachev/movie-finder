@@ -1,4 +1,3 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MovieDetailsComponent } from './movie-details.component';
 import { Movie } from '../../types/MovieTypes';
@@ -7,13 +6,15 @@ import { createMock } from '@testing-library/angular/jest-utils';
 import { MovieService } from '../../services/movie.service';
 import { CommentService } from '../../services/comment.service';
 import { UserService } from '../../services/user.service';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { UserRegisterRequest, UserRegisterResponse, UserLoginRequest, UserLoginResponse } from '../../types/UserTypes';
+import { BehaviorSubject, of } from 'rxjs';
+import { UserRegisterResponse } from '../../types/UserTypes';
 import { render,screen } from '@testing-library/angular';
 import { AddCommentComponent } from '../../components/add-comment/add-comment.component';
 import { EditCommentComponent } from '../../components/edit-comment/edit-comment.component';
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 import { ImgModalDirective } from '../../directives/img-modal.directive';
+import userEvent from '@testing-library/user-event';
+import { Comment } from '../../types/CommentTypes';
 
 describe('MovieDetailsComponent', () => {
 
@@ -556,5 +557,172 @@ describe('MovieDetailsComponent', () => {
         expect(deleteBtn).toBeInTheDocument()
       })
       
+    })
+
+    test("guest user should not see 'Add Comment' button and textarea element for adding comments",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: '',
+        token: '',
+        userName: ''
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const addCommentBtn = screen.queryByRole("button",{name:/add comment/i})
+      const commentTextArea = screen.queryByRole('textbox');
+      expect(addCommentBtn).not.toBeInTheDocument()
+      expect(commentTextArea).not.toBeInTheDocument()
+    })
+
+    test("logged-in user should see 'Add Comment' button and textarea element for adding comments",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+
+      
+      const addCommentBtn = await screen.findByRole("button",{name:/add comment/i})
+      const commentTextArea = screen.getByRole('textbox');
+      expect(addCommentBtn).toBeInTheDocument()
+      expect(commentTextArea).toBeInTheDocument()
+    })
+
+    test("logged-in user should be able to delete its own comment",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      commentService.deleteComment = jest.fn((commentId: number) => {
+        const deletedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        movieMock.comments = movieMock.comments.filter((comment) => comment.id !== commentId);
+        return of(deletedComment);
+      })
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+     const {fixture} = await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+      const commentToDelete = await screen.findByText(movieMock.comments[2].content)
+      const component = fixture.componentInstance
+      const deleteCommentSpy = jest.spyOn(component,"deleteComment")
+      const user = userEvent.setup();
+      const deleteButtons = await screen.findAllByRole("button",{name: /delete/i})
+      const deleteBtn = deleteButtons[0]
+      await user.click(deleteBtn)
+      expect(deleteCommentSpy).toHaveBeenCalledTimes(1)
+      expect(commentToDelete).not.toBeInTheDocument()
     })
 });
