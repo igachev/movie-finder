@@ -12,7 +12,6 @@ namespace movies_api.Models
         public int Id { get; set; }
         public string GenreName { get; set; } = string.Empty;
         // many to one -> Movie
-        public int? MovieId { get; set; }
         public Movie? Movie { get; set; }
           // many to many
         public List<MovieGenre> MovieGenre { get; set; } = new List<MovieGenre>();
