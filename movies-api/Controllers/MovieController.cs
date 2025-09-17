@@ -64,8 +64,18 @@ namespace movies_api.Controllers
                 var createdMovie = await _movieRepo.CreateMovie(movie);
                 for (int i = 0; i < genres.Count; i++)
                 {
-                    var createdGenre = await _genreRepo.AddGenre(new Genre { MovieId = createdMovie.Id, GenreName = genres[i] });
-                    await _movieGenreRepo.AddMovieGenre(createdMovie.Id, createdGenre.Id);
+                    var genre = new Genre { GenreName = genres[i] };
+                    var isGenreExist = await _genreRepo.IsGenreExist(genre);
+                    if (isGenreExist == true)
+                    {
+                        var genreId = await _genreRepo.GetGenreId(genre);
+                        await _movieGenreRepo.AddMovieGenre(createdMovie.Id, genreId);
+                    }
+                    else
+                    {
+                        var createdGenre = await _genreRepo.AddGenre(genre);
+                        await _movieGenreRepo.AddMovieGenre(createdMovie.Id, createdGenre.Id);
+                    }
                 }
                 return CreatedAtAction(nameof(CreateMovie), new { id = createdMovie.Id }, createdMovie.ToMovieDto());
             }
