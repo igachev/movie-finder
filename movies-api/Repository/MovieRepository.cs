@@ -109,7 +109,8 @@ namespace movies_api.Repository
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
             var movies = await _context.Movie.Include((m) => m.Comments)
             .ThenInclude(c => c.AppUser)
-            .Include(m => m.Genres)
+            .Include(mg => mg.MovieGenre)
+            .ThenInclude(m => m.Genre)
             .AsQueryable()
             .Skip(skipNumber)
             .Take(query.PageSize)
