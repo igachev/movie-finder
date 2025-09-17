@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using movies_api.Dtos.Comment;
@@ -20,7 +21,7 @@ namespace movies_api.Mappers
                 Title = movie.Title,
                 Description = movie.Description,
                 Comments = movie.Comments.Select(c => c.ToCommentDto()).ToList(),
-                Genres = movie.Genres.Select(g => g.ToGenreDto()).ToList()
+                Genres = movie.MovieGenre.Select(mg => mg.Genre.ToGenreDto()).ToList()
             };
         }
 
