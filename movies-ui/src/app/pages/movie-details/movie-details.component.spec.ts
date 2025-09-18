@@ -14,8 +14,9 @@ import { EditCommentComponent } from '../../components/edit-comment/edit-comment
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 import { ImgModalDirective } from '../../directives/img-modal.directive';
 import userEvent from '@testing-library/user-event';
-import { Comment } from '../../types/CommentTypes';
+import { Comment, CommentRequest } from '../../types/CommentTypes';
 import { LoadingService } from '../../services/loading.service';
+import { By } from '@angular/platform-browser';
 
 describe('MovieDetailsComponent', () => {
 
@@ -848,4 +849,206 @@ describe('MovieDetailsComponent', () => {
       expect(deleteCommentSpy).toHaveBeenCalledTimes(1)
       expect(commentToDelete).not.toBeInTheDocument()
     })
+
+    test("when logged-in user clicks on 'Edit' button the button text should change to 'Cancel'",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      commentService.deleteComment = jest.fn((commentId: number) => {
+        const deletedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        movieMock.comments = movieMock.comments.filter((comment) => comment.id !== commentId);
+        return of(deletedComment);
+      })
+      commentService.getComment = jest.fn((commentId: number) => {
+        const selectedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        console.log(selectedComment)
+        return of(selectedComment);
+      })
+      // commentService.editComment((movieId: number,commentId: number,commentRequest: CommentRequest) => {
+
+      // })
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'admin@abv.bg',
+        token: '1234',
+        userName: 'admin'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+     const {fixture} = await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+      const component = fixture.componentInstance
+      const user = userEvent.setup();
+      const editButtons = await screen.findAllByRole("button",{name: /edit/i})
+      const editBtn = editButtons[0]
+      await user.click(editBtn)
+      expect(editBtn.textContent.trim()).toBe('Cancel')
+    })
+
+    test("when logged-in user clicks on 'Edit' button textarea element and 'Edit Comment' button should appear",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      commentService.deleteComment = jest.fn((commentId: number) => {
+        const deletedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        movieMock.comments = movieMock.comments.filter((comment) => comment.id !== commentId);
+        return of(deletedComment);
+      })
+      commentService.getComment = jest.fn((commentId: number) => {
+        const selectedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        return of(selectedComment);
+      })
+      // commentService.editComment((movieId: number,commentId: number,commentRequest: CommentRequest) => {
+
+      // })
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'admin@abv.bg',
+        token: '1234',
+        userName: 'admin'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+     const {fixture} = await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+      const component = fixture.componentInstance
+      const user = userEvent.setup();
+      const editButtons = await screen.findAllByRole("button",{name: /edit/i})
+      const editBtn = editButtons[0]
+      await user.click(editBtn)
+      expect(editBtn.textContent.trim()).toBe('Cancel')
+      const textAreas = await screen.findAllByRole("textbox")
+      const editCommentTextArea = textAreas[0]
+      expect((editCommentTextArea as HTMLTextAreaElement).value).toBe(movieMock.comments[0].content)
+      const editCommentButton = await screen.findByRole("button", {name: /Edit Comment/i})
+      expect(editCommentButton).toBeInTheDocument();
+    })
+
+     test("when logged-in user has not clicked on 'Edit' button textarea element and 'Edit Comment' button should not appear",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      commentService.deleteComment = jest.fn((commentId: number) => {
+        const deletedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        movieMock.comments = movieMock.comments.filter((comment) => comment.id !== commentId);
+        return of(deletedComment);
+      })
+      commentService.getComment = jest.fn((commentId: number) => {
+        const selectedComment = movieMock.comments.find((comment) => comment.id === commentId) as Comment;
+        return of(selectedComment);
+      })
+      // commentService.editComment((movieId: number,commentId: number,commentRequest: CommentRequest) => {
+
+      // })
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'admin@abv.bg',
+        token: '1234',
+        userName: 'admin'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+     const {fixture} = await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          }
+        ]
+      });
+      const editButtons = await screen.findAllByRole("button",{name: /edit/i})
+      const editBtn = editButtons[0]
+      expect(editBtn.textContent.trim()).toBe('Edit')
+      expect(editBtn.textContent.trim()).not.toBe('Cancel')
+      const editCommentButton = screen.queryByRole("button", {name: /Edit Comment/i})
+      expect(editCommentButton).not.toBeInTheDocument();
+    })
+
 });
