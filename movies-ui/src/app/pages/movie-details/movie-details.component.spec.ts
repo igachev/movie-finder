@@ -15,6 +15,7 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
 import { ImgModalDirective } from '../../directives/img-modal.directive';
 import userEvent from '@testing-library/user-event';
 import { Comment } from '../../types/CommentTypes';
+import { LoadingService } from '../../services/loading.service';
 
 describe('MovieDetailsComponent', () => {
 
@@ -170,6 +171,128 @@ describe('MovieDetailsComponent', () => {
       const movieImages = await screen.findAllByRole("img")
       const uniqueSrcs = [...new Set(movieImages.map(img => img.getAttribute("src")))]
       expect(uniqueSrcs).toEqual(imagesMock.images)
+    })
+
+     test("user should see LoadingSpinner while movie data is loading",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      const loadingSpinnerSubject = new BehaviorSubject<boolean>(true);
+      const loadingService = {
+        $loadingSpinner: loadingSpinnerSubject.asObservable()
+      }
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          },
+          {
+            provide: LoadingService,
+            useValue: loadingService
+          }
+        ]
+      });
+
+      
+      const loadingSpinners = await screen.findAllByTestId("loading-spinner");
+      loadingSpinners.forEach((loadingSpinner) =>
+      expect(loadingSpinner).toBeInTheDocument());
+    })
+
+     test("user should not see LoadingSpinner when movie data is loaded",async () => {
+      const movieService = createMock(MovieService)
+      movieService.getMovie = jest.fn((movieId: string) => {
+        return of(movieMock)
+      })
+      const commentService = createMock(CommentService)
+      const imageService = createMock(ImageService)
+      imageService.getImages = jest.fn((movieTitle: string) => {
+        return of(imagesMock)
+      })
+      const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+        email: 'ivan@abv.bg',
+        token: '1234',
+        userName: 'ivan'
+      });
+      const userService = {
+        $userSubjectObservable: mockUserSubject.asObservable(),
+      };
+
+      const loadingSpinnerSubject = new BehaviorSubject<boolean>(false);
+      const loadingService = {
+        $loadingSpinner: loadingSpinnerSubject.asObservable()
+      }
+
+      await render(MovieDetailsComponent,{
+        declarations: [
+          AddCommentComponent,
+          EditCommentComponent,
+          LoadingSpinnerComponent,
+          ImgModalDirective
+        ],
+        providers: [
+          {
+            provide: MovieService,
+            useValue: movieService
+          },
+          {
+            provide: CommentService,
+            useValue: commentService
+          },
+          {
+            provide: UserService,
+            useValue: userService
+          },
+          {
+            provide: ImageService,
+            useValue: imageService
+          },
+          {
+            provide: LoadingService,
+            useValue: loadingService
+          }
+        ]
+      });
+
+      
+      const loadingSpinners = screen.queryAllByTestId("loading-spinner");
+      loadingSpinners.forEach((loadingSpinner) =>
+      expect(loadingSpinner).not.toBeInTheDocument());
     })
 
     test("should show movie comments",async () => {
