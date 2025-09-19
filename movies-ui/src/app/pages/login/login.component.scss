@@ -1,0 +1,5 @@
+
+input[type=text].ng-touched.ng-invalid,
+input[type=password].ng-touched.ng-invalid {
+    border-color: brown;
+}
