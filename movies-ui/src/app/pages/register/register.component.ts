@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserRegisterRequest } from '../../types/UserTypes';
 import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
+import { EmailDirective } from '../../directives/email.directive';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, CommonModule, LoadingSpinnerComponent],
+  imports: [FormsModule, CommonModule, LoadingSpinnerComponent,EmailDirective],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })

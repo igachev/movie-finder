@@ -11,12 +11,15 @@
             </div>
          <div class="flex flex-col lg:flex-row">
             <label for="email" class="text-lg sm:text-xl md:text-2xl mx-2">Email:</label>
-            <input type="text" name="email" ngModel required #email="ngModel" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
+            <input type="text" appEmail name="email" ngModel required #email="ngModel" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
         </div>
+         <small *ngIf="email.touched && email.errors?.['required']" class="text-red-800">Email is required</small>
+         <small *ngIf="email.touched && email.errors?.['invalidEmail'] && !email.errors?.['required']" class="text-red-800">Invalid Email</small>
          <div class="flex flex-col lg:flex-row">
             <label for="password" class="text-lg sm:text-xl md:text-2xl mx-2">Password:</label>
             <input type="password" name="password" ngModel required #password="ngModel" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
         </div>
+        <small *ngIf="password.touched && password.errors?.['required']" class="text-red-800">Password is required</small>
         <div>
             <button type="submit" [disabled]="!registerForm.valid" class="text-base text-white font-light tracking-wider sm:text-lg md:text-xl py-2 px-4 bg-slate-900 rounded cursor-pointer hover:text-sky-400 transition duration-400">Register</button>
         </div>
