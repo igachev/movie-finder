@@ -7,9 +7,10 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ImageService } from '../../services/image.service';
 import { LoadingSpinnerComponent } from "../../components/loading-spinner/loading-spinner.component";
+import { movieTitleValidator } from '../../validators/movieTitle.validator';
 
 type MovieForm = {
-  title: FormControl<string>;
+  title: FormControl<string | null>;
   description: FormControl<string>;
   genres: FormArray;
 }
@@ -29,10 +30,22 @@ export class CreateMovieComponent {
   private fileList!: FileList
 
   createMovieForm = this.formBuilder.group<MovieForm>({
-    title: new FormControl(),
+    title: new FormControl(null,[Validators.required,Validators.minLength(2),movieTitleValidator()]),
     description: new FormControl(),
     genres: new FormArray([new FormControl("")])
   })
+
+  get requiredTitleError(): boolean {
+   return this.createMovieForm.get("title")?.getError("required") && this.createMovieForm.touched
+   ? true
+   : false;
+  }
+
+   get invalidTitleError(): boolean {
+   return this.createMovieForm.get("title")?.getError("invalidTitle") && this.createMovieForm.touched
+   ? true
+   : false;
+  }
 
   get genres(): FormArray {
     return this.createMovieForm.get("genres") as FormArray

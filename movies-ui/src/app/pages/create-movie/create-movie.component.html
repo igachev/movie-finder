@@ -5,6 +5,8 @@
             <label for="title" class="text-lg sm:text-xl md:text-2xl mx-2">Title:</label>
             <input type="text" name="title" formControlName="title" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
         </div>
+        <small *ngIf="requiredTitleError">title is required</small>
+        <small *ngIf="invalidTitleError && !requiredTitleError">title cannot contain these symbols: &#64;!&#125;/#$%^&*()=<></small>
         <div>
             <label for="fileCollection" class="text-lg sm:text-xl md:text-2xl mx-2">add image or images:</label>
             <input accept="image/*" multiple type="file" name="fileCollection" (change)="onSelectedImages($event)" class="border rounded-lg p-2 cursor-pointer text-xs sm:text-base md:text-lg bg-slate-300">
