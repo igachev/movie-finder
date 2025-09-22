@@ -3,7 +3,7 @@
     <form method="post" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" class="w-3/3 sm:w-2/3 mx-auto flex flex-col justify-center items-center gap-4 bg-blue-100 rounded-xl p-4 shadow-2xl">
          <div class="flex flex-col lg:flex-row">
             <label for="email" class="text-lg sm:text-xl md:text-2xl mx-2">Email:</label>
-            <input appEmail type="text" name="email" ngModel required #email="ngModel" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
+            <input appEmail type="text" name="email" id="email" ngModel required #email="ngModel" class="border rounded-lg p-2 text-xs sm:text-base md:text-lg bg-slate-300">
         </div>
         <small *ngIf="email.touched && email.errors?.['required']" class="text-red-800">Email is required</small>
         <small *ngIf="email.touched && email.errors?.['invalidEmail'] && !email.errors?.['required']" class="text-red-800">Invalid Email</small>
