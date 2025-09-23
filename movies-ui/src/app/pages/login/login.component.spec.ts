@@ -8,6 +8,10 @@ import { LoadingSpinnerComponent } from '../../components/loading-spinner/loadin
 import { UserService } from '../../services/user.service';
 import userEvent from '@testing-library/user-event';
 
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+
 describe('LoginComponent', () => {
 
   afterEach(() => {
@@ -247,6 +251,191 @@ describe('LoginComponent', () => {
     await user.tab();
     const emailIsRequired = await screen.findByText(new RegExp("email is required","i"))
     expect(emailIsRequired).toBeInTheDocument();
+  })
+
+  test("should show 'Invalid Email' message if the user enters invalid email format", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+    // name is actually the content text in Label element
+    const emailInput = screen.getByRole("textbox", {name: "Email:"}) 
+    expect(emailInput).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.click(emailInput)
+    await user.type(emailInput,"ivo")
+    await user.tab();
+    const emailIsRequired = await screen.findByText(new RegExp("invalid email","i"))
+    expect(emailIsRequired).toBeInTheDocument();
+  })
+
+  test("should not show 'Invalid Email' message without interaction with the input field", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+    // name is actually the content text in Label element
+    const emailInput = screen.getByRole("textbox", {name: "Email:"}) 
+    expect(emailInput).toBeInTheDocument()
+    const emailIsRequired = screen.queryByText(new RegExp("invalid email","i"))
+    expect(emailIsRequired).not.toBeInTheDocument();
+  })
+
+  test("clicking on button 'Login' should not call onLogin(),userService.login() methods if both email and password fields are empty", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    const { fixture } = await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+    // name is actually the content text in Label element
+    const loginComponent = fixture.componentInstance;
+    const onLoginSpy = jest.spyOn(loginComponent,"onLogin")
+    const emailInput = screen.getByRole("textbox", {name: "Email:"}) 
+    expect(emailInput).toBeInTheDocument()
+    expect(emailInput.textContent).toBe("")
+    const passwordInput = screen.getByLabelText("Password:") // selects password input field by the label name
+    expect(passwordInput).toBeInTheDocument()
+    expect(passwordInput.textContent).toBe("")
+    const loginButton = await screen.findByRole("button",{name: /login/i})
+    expect(loginButton).toBeInTheDocument();
+    const user = userEvent.setup()
+    await user.click(loginButton)
+    expect(onLoginSpy).toHaveBeenCalledTimes(0)
+  })
+
+  test("clicking on button 'Login' should invoke onLogin(),userService.login() methods", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    const { fixture } = await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        },
+      ]
+    });
+    // name is actually the content text in Label element
+    const loginComponent = fixture.componentInstance;
+    const onLoginSpy = jest.spyOn(loginComponent,"onLogin")
+    const userServiceLoginSpy = jest.spyOn(userService,"login")
+    const user = userEvent.setup()
+    const emailInput = screen.getByRole("textbox", {name: "Email:"}) 
+    expect(emailInput).toBeInTheDocument()
+    await user.type(emailInput,"ivan@abv.bg")
+    const passwordInput = screen.getByLabelText("Password:") // selects password input field by the label name
+    expect(passwordInput).toBeInTheDocument()
+    await user.type(passwordInput,"123456")
+    const loginButton = await screen.findByRole("button",{name: /login/i})
+    expect(loginButton).toBeInTheDocument();
+    await user.click(loginButton)
+    expect(onLoginSpy).toHaveBeenCalledTimes(1)
+    expect(userServiceLoginSpy).toHaveBeenCalledTimes(1)
+    expect(userServiceLoginSpy).toHaveBeenCalledWith({email: "ivan@abv.bg", password: "123456"})
   })
 
 });
