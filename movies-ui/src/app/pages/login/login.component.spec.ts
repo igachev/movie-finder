@@ -168,6 +168,8 @@ describe('LoginComponent', () => {
     // name is actually the content text in Label element
     const emailInput = screen.getByRole("textbox", {name: "Email:"}) 
     expect(emailInput).toBeInTheDocument()
+    expect(emailInput.textContent).toBe("")
+    expect(emailInput).toHaveAttribute("type","text")
   })
 
    test("should not show message 'Email is required' without interaction with the input field", async() => {
@@ -335,6 +337,130 @@ describe('LoginComponent', () => {
     expect(emailInput).toBeInTheDocument()
     const emailIsRequired = screen.queryByText(new RegExp("invalid email","i"))
     expect(emailIsRequired).not.toBeInTheDocument();
+  })
+
+   test("should have password input element", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+     const passwordInput = screen.getByLabelText("Password:") // selects password input field by the label name
+    expect(passwordInput).toBeInTheDocument()
+    expect(passwordInput.textContent).toBe("")
+    expect(passwordInput).toHaveAttribute("type","password")
+  })
+
+   test("should show message 'Password is required' if the user leave the password input empty", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+     const passwordInput = screen.getByLabelText("Password:") // selects password input field by the label content
+     const user = userEvent.setup();
+    expect(passwordInput).toBeInTheDocument()
+    expect(passwordInput.textContent).toBe("")
+    expect(passwordInput).toHaveAttribute("type","password")
+    await user.click(passwordInput);
+    await user.tab();
+    const message = await screen.findByText("Password is required");
+    expect(message).toBeInTheDocument();
+  })
+
+   test("should not show message 'Password is required' without interaction with the password input field", async() => {
+    const mockUserSubject = new BehaviorSubject<UserRegisterResponse>({
+            email: '',
+            token: '',
+            userName: ''
+          });
+
+    const mockLoginResponse = {
+            email: 'ivan@abv.bg',
+            token: '1234',
+            userName: 'ivan'
+          };
+    const mockUserLoginRequest = {
+            email: 'ivan@abv.bg',
+            password: '123456'
+    }
+    const userService = {
+      login: jest.fn((userLoginRequest: UserLoginRequest): Observable<UserLoginResponse> => of(mockLoginResponse)),
+      $userSubjectObservable: mockUserSubject
+    };
+
+    await render(LoginComponent, {
+      declarations: [
+        LoadingSpinnerComponent,
+         EmailDirective
+      ],
+      providers: [
+        {
+          provide: UserService,
+          useValue: userService
+        }
+      ]
+    });
+    const passwordInput = screen.getByLabelText("Password:") // selects password input field by the label content
+    expect(passwordInput).toBeInTheDocument()
+    expect(passwordInput.textContent).toBe("")
+    expect(passwordInput).toHaveAttribute("type","password")
+    const message = screen.queryByText("Password is required");
+    expect(message).not.toBeInTheDocument();
   })
 
   test("clicking on button 'Login' should not call onLogin(),userService.login() methods if both email and password fields are empty", async() => {
