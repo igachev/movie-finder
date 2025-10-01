@@ -4,7 +4,7 @@ import { Movie } from '../../types/MovieTypes';
 import { forkJoin, map, Observable, Subscription, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MoviesCardComponent } from "../../components/movies-card/movies-card.component";
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ImageService } from '../../services/image.service';
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner.component';
 
@@ -23,9 +23,13 @@ export class MoviesComponent implements OnInit,OnDestroy {
     private pageSize: number = 2;
     private moviesSubscription!: Subscription;
     errorMessage!: string;
+    private router = inject(Router)
+    private route = inject(ActivatedRoute)
 
     ngOnInit(): void {
      this.getMovies()
+      this.updatePageParameters()
+     
     }
 
     getMovies() {
@@ -60,6 +64,7 @@ export class MoviesComponent implements OnInit,OnDestroy {
     nextPage(): void {
         this.pageNumber++
         this.getMovies()
+        this.updatePageParameters()
     }
 
     previousPage(): void {
@@ -69,11 +74,23 @@ export class MoviesComponent implements OnInit,OnDestroy {
       else {
         this.pageNumber--
         this.getMovies()
+        this.updatePageParameters()
       }
     }
 
     movieWasDeleted($event: boolean) {
       this.getMovies()
+    }
+
+    updatePageParameters() {
+      this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: {pageNumber: this.pageNumber, pageSize: this.pageSize},
+        queryParamsHandling: 'merge'
+      }
+     );
     }
 
     ngOnDestroy(): void {
