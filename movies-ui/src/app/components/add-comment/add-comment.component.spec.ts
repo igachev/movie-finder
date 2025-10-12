@@ -8,8 +8,9 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 import userEvent from '@testing-library/user-event';
 import { MovieDetailsComponent } from '../../pages/movie-details/movie-details.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { CommentRequest } from '../../types/CommentTypes';
+import { LoadingService } from '../../services/loading.service';
 
 describe('AddCommentComponent', () => {
   
@@ -123,5 +124,119 @@ describe('AddCommentComponent', () => {
     expect(mockCommentService.addComment).toHaveBeenCalledWith(2,{content:"my comment"})
     expect(mockCommentEmitter).toHaveBeenCalledTimes(1)
     expect(mockCommentEmitter).toHaveBeenCalledWith(mockCommentResponse)
+  });
+
+    test("clicking on button 'Add Comment' should clear the content of textarea when adding a comment", async() => {
+
+    await render(AddCommentComponent, {
+      declarations: [
+        LoadingSpinnerComponent
+      ],
+      on: {
+        commentEmitter: mockCommentEmitter
+      },
+      providers: [
+        {
+          provide: CommentService,
+          useValue: mockCommentService
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                id: 2
+              }
+            }
+          }
+        }
+      ],
+    
+    });
+
+    const textAreaElement = screen.getByLabelText(/write your comment.../i);
+    expect(textAreaElement).toBeInTheDocument()
+    await user.type(textAreaElement,"my comment")
+    const addCommentBtn = await screen.findByRole("button",{name: /add comment/i})
+    expect(addCommentBtn).toBeInTheDocument()
+    await user.click(addCommentBtn)
+    expect(textAreaElement.textContent).toBe("")
+  });
+
+    test("LoadingSpinner Component should not appear initially", async() => {
+
+    await render(AddCommentComponent, {
+      declarations: [
+        LoadingSpinnerComponent
+      ],
+      on: {
+        commentEmitter: mockCommentEmitter
+      },
+      providers: [
+        {
+          provide: CommentService,
+          useValue: mockCommentService
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                id: 2
+              }
+            }
+          }
+        }
+      ],
+    
+    });
+
+    const loadingSpinnerComponent = await screen.queryByTestId("loading-spinner");
+    expect(loadingSpinnerComponent).not.toBeInTheDocument();
+  });
+
+     test("LoadingSpinner Component should appear when the comment is in the process of being added", async() => {
+      const mockLoadingSubject = new BehaviorSubject(true)
+          const loadingService = {
+              $loadingSpinner: mockLoadingSubject.asObservable()
+            }
+
+    await render(AddCommentComponent, {
+      declarations: [
+        LoadingSpinnerComponent
+      ],
+      on: {
+        commentEmitter: mockCommentEmitter
+      },
+      providers: [
+        {
+          provide: CommentService,
+          useValue: mockCommentService
+        },
+        {
+          provide: LoadingService,
+          useValue: loadingService
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                id: 2
+              }
+            }
+          }
+        }
+      ],
+    
+    });
+    const textAreaElement = screen.getByLabelText(/write your comment.../i);
+    expect(textAreaElement).toBeInTheDocument()
+    await user.type(textAreaElement,"my comment")
+    const addCommentBtn = await screen.findByRole("button",{name: /add comment/i})
+    expect(addCommentBtn).toBeInTheDocument()
+    await user.click(addCommentBtn)
+    const loadingSpinnerComponent = await screen.findByTestId("loading-spinner");
+    expect(loadingSpinnerComponent).toBeInTheDocument();
   });
 });
