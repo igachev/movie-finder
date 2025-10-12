@@ -90,7 +90,8 @@ namespace movies_api.Repository
             {
              var movie = await _context.Movie.Include((m) => m.Comments)
              .ThenInclude(c => c.AppUser)
-             .Include(m => m.Genres)
+             .Include(mg => mg.MovieGenre)
+             .ThenInclude(m => m.Genre)
              .FirstOrDefaultAsync((m) => m.Id == id);
                 if (movie == null)
                 {
