@@ -12,11 +12,15 @@ describe('MovieService', () => {
     { id: 3, title: 'Star Wars:Rogue One', description: 'star wars description', comments: [], genres: [{ genreName: "sci-fi" }, { genreName: "action" }], firstImg: 'img3' },
   ];
 
-  let httpClientMock = { get: jest.fn() };
+  let httpClientMock = { 
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn() 
+  };
   let movieService: MovieService;
 
   beforeEach(() => {
-     httpClientMock = { get: jest.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -54,6 +58,21 @@ describe('MovieService', () => {
     });
   });
 
+test("'getMovie' method should be defined",() => {
+    expect(movieService.getMovie).toBeDefined();
+  })
 
+   test("'getMovie' should return correct movie based on movieId parameter", (done) => {
+    const movieId: string = "2";
+
+    // Mock the HttpClient.get call
+    httpClientMock.get.mockReturnValue(of(mockMovies[Number(movieId)]));
+    const expectedMovie = mockMovies[Number(movieId)];
+    movieService.getMovie(movieId).subscribe(movie => {
+      expect(movie).toEqual(expectedMovie);
+      expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
 
 });
