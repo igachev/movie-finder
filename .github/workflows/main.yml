@@ -28,6 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
           cache: 'npm'
+          cache-dependency-path: movies-ui/package-lock.json
        # ---------------------------------------------------------
       # 3) Install dependencies,build and test
       # ---------------------------------------------------------
