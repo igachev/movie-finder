@@ -38,6 +38,12 @@ jobs:
           npm install --force
           npm run build --if-present
           npm test
+          npm test -- --watch=false --code-coverage
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: movies-ui/coverage
       # ---------------------------------------------------------
       # 4) Print environment variables within job scope
       # ---------------------------------------------------------
@@ -53,5 +59,16 @@ jobs:
      - name: printing message
        run: |
          echo "Hello ${{ github.actor }}!Your pipeline ran successfully."
-    
+  practice-matrix:
+    name: learning and practicing matrix concepts
+    runs-on: ubuntu-latest
+    needs: [build-and-test,greeting]
+    strategy:
+      matrix:
+        user: ['ivan','maria']
+        action: ['eating','sleeping','running']
+    steps:
+      - name: show matrix data
+        run: |
+          echo "User ${{ matrix.user }} is ${{ matrix.action }}"
   
